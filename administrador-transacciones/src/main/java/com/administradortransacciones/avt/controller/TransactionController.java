@@ -23,7 +23,7 @@ public class TransactionController {
 
 	@GetMapping
 	public ResponseEntity<List<Transaction>> getTransactions(@RequestParam(value = "peso", defaultValue = "0") int peso) {
-		return new ResponseEntity<List<Transaction>>(HttpStatus.OK);
+		return new ResponseEntity<List<Transaction>>(transactionService.getTransactions(), HttpStatus.OK);
 	}
 
 	@PostMapping
