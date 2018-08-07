@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.administradortransacciones.avt.dao.model.Transaction;
+import com.administradortransacciones.avt.common.dto.TransactionDto;
 import com.administradortransacciones.avt.service.TransactionService;
 
 @RestController("/v1/transactions")
@@ -22,8 +22,8 @@ public class TransactionController {
 	private TransactionService transactionService;
 
 	@GetMapping
-	public ResponseEntity<List<Transaction>> getTransactions(@RequestParam(value = "peso", defaultValue = "0") int peso) {
-		return new ResponseEntity<List<Transaction>>(transactionService.getTransactions(), HttpStatus.OK);
+	public ResponseEntity<List<TransactionDto>> getTransactions(@RequestParam(value = "peso", defaultValue = "0") int peso) {
+		return new ResponseEntity<List<TransactionDto>>(transactionService.getTransactions(), HttpStatus.OK);
 	}
 
 	@PostMapping

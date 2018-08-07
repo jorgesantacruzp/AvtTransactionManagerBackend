@@ -1,5 +1,10 @@
 package com.administradortransacciones.avt.dao.relational;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -18,8 +23,12 @@ public class MySqlRepository implements TransactionDao {
 	}
 
 	@Override
-	public Iterable<Transaction> findAll() {
-		return txnRepo.findAll();
+	public List<Transaction> findAll() {
+		Iterable<Transaction> results = txnRepo.findAll();
+		if (results == null) {
+			return new ArrayList<>();
+		}
+		return StreamSupport.stream(results.spliterator(), false).collect(Collectors.toList());
 	}
 
 	@Override

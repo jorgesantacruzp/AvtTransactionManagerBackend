@@ -1,12 +1,14 @@
 package com.administradortransacciones.avt.dao;
 
+import java.util.List;
+
 import com.administradortransacciones.avt.dao.model.Transaction;
 
 public interface TransactionDao {
 
 	void persist();
 
-	Iterable<Transaction> findAll();
+	List<Transaction> findAll();
 
 	void findByWeight();
 
