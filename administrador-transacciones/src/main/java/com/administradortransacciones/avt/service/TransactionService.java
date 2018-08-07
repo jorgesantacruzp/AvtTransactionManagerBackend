@@ -21,7 +21,15 @@ public class TransactionService {
 
 	public List<TransactionDto> getTransactions(int peso, String repository) {
 		List<?> results = repositoryContext.getDatabaseInstance(repository).findAll();
+		return buildTransacionDtoList(results);
+	}
 
+	public List<TransactionDto> findTransactionByWeight(int weight, String repository) {
+		List<?> results = repositoryContext.getDatabaseInstance(repository).findByWeight(weight);
+		return buildTransacionDtoList(results);
+	}
+
+	private List<TransactionDto> buildTransacionDtoList(List<?> results) {
 		if (results.isEmpty()) {
 			// TODO: return a message?
 			return new ArrayList<>();

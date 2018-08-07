@@ -13,7 +13,7 @@ import com.administradortransacciones.avt.dao.mongo.model.TransactionMongo;
 public class MongoDbRepository implements TransactionDao<TransactionMongo> {
 
 	@Autowired
-	private MongoDbTransactionRepository transactionRepository;
+	private MongoDbTransactionRepository mongoTransactionRepository;
 
 	@Override
 	public void persist() {
@@ -22,7 +22,7 @@ public class MongoDbRepository implements TransactionDao<TransactionMongo> {
 
 	@Override
 	public List<TransactionMongo> findAll() {
-		List<TransactionMongo> results = transactionRepository.findAll();
+		List<TransactionMongo> results = mongoTransactionRepository.findAll();
 		if (results == null) {
 			return new ArrayList<>();
 		}
@@ -30,8 +30,12 @@ public class MongoDbRepository implements TransactionDao<TransactionMongo> {
 	}
 
 	@Override
-	public void findByWeight() {
-
+	public List<TransactionMongo> findByWeight(final int weight) {
+		List<TransactionMongo> results = mongoTransactionRepository.findByWeight(weight);
+		if (results == null) {
+			return new ArrayList<>();
+		}
+		return results;
 	}
 
 	@Override

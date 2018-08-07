@@ -15,7 +15,7 @@ import com.administradortransacciones.avt.dao.mysql.model.TransactionMySql;
 public class MySqlRepository implements TransactionDao<TransactionMySql> {
 
 	@Autowired
-	private MySqlTransactionRepository txnRepo;
+	private MySqlTransactionRepository mysqlTransactionRepository;
 
 	@Override
 	public void persist() {
@@ -24,7 +24,7 @@ public class MySqlRepository implements TransactionDao<TransactionMySql> {
 
 	@Override
 	public List<TransactionMySql> findAll() {
-		Iterable<TransactionMySql> results = txnRepo.findAll();
+		Iterable<TransactionMySql> results = mysqlTransactionRepository.findAll();
 		if (results == null) {
 			return new ArrayList<>();
 		}
@@ -32,8 +32,12 @@ public class MySqlRepository implements TransactionDao<TransactionMySql> {
 	}
 
 	@Override
-	public void findByWeight() {
-
+	public List<TransactionMySql> findByWeight(final int weight) {
+		List<TransactionMySql> results = mysqlTransactionRepository.findByWeight(weight);
+		if (results == null) {
+			return new ArrayList<>();
+		}
+		return results;
 	}
 
 	@Override
