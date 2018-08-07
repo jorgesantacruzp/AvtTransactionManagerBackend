@@ -9,5 +9,7 @@ import com.administradortransacciones.avt.dao.mysql.model.TransactionMySql;
 public interface MySqlTransactionRepository extends CrudRepository<TransactionMySql, Long> {
 
 	List<TransactionMySql> findByWeight(int weight);
+	
+	List<TransactionMySql> findByTypeName(String type);
 
 }

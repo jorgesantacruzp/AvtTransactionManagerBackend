@@ -39,8 +39,12 @@ public class MongoDbRepository implements TransactionDao<TransactionMongo> {
 	}
 
 	@Override
-	public void findByType() {
-
+	public List<TransactionMongo> findByType(final String type) {
+		List<TransactionMongo> results = mongoTransactionRepository.findByTypeName(type);
+		if (results == null) {
+			return new ArrayList<>();
+		}
+		return results;
 	}
 
 	@Override

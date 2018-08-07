@@ -9,4 +9,6 @@ import com.administradortransacciones.avt.dao.mongo.model.TransactionMongo;
 public interface MongoDbTransactionRepository extends MongoRepository<TransactionMongo, Long> {
 
 	List<TransactionMongo> findByWeight(int weight);
+
+	List<TransactionMongo> findByTypeName(String type);
 }

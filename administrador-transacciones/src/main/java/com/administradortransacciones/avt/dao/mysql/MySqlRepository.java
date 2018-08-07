@@ -41,8 +41,12 @@ public class MySqlRepository implements TransactionDao<TransactionMySql> {
 	}
 
 	@Override
-	public void findByType() {
-
+	public List<TransactionMySql> findByType(final String type) {
+		List<TransactionMySql> results = mysqlTransactionRepository.findByTypeName(type);
+		if (results == null) {
+			return new ArrayList<>();
+		}
+		return results;
 	}
 
 	@Override

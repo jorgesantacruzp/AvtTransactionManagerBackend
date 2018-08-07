@@ -10,7 +10,7 @@ public interface TransactionDao<T> {
 
 	List<T> findByWeight(int weight);
 
-	void findByType();
+	List<T> findByType(String type);
 
 	void delete();
 }
