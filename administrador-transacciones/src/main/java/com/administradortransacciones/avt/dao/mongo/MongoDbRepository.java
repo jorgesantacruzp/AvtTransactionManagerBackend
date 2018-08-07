@@ -1,21 +1,19 @@
-package com.administradortransacciones.avt.dao.relational;
+package com.administradortransacciones.avt.dao.mongo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.administradortransacciones.avt.dao.TransactionDao;
-import com.administradortransacciones.avt.dao.model.Transaction;
+import com.administradortransacciones.avt.dao.mongo.model.TransactionMongo;
 
 @Repository
-public class MySqlRepository implements TransactionDao {
+public class MongoDbRepository implements TransactionDao<TransactionMongo> {
 
 	@Autowired
-	private MySqlTransactionRepository txnRepo;
+	private MongoDbTransactionRepository transactionRepository;
 
 	@Override
 	public void persist() {
@@ -23,12 +21,12 @@ public class MySqlRepository implements TransactionDao {
 	}
 
 	@Override
-	public List<Transaction> findAll() {
-		Iterable<Transaction> results = txnRepo.findAll();
+	public List<TransactionMongo> findAll() {
+		List<TransactionMongo> results = transactionRepository.findAll();
 		if (results == null) {
 			return new ArrayList<>();
 		}
-		return StreamSupport.stream(results.spliterator(), false).collect(Collectors.toList());
+		return results;
 	}
 
 	@Override

@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.administradortransacciones.avt.common.dto.TransactionDto;
-import com.administradortransacciones.avt.common.mapper.TransactionMapper;
 import com.administradortransacciones.avt.dao.RepositoryContext;
-import com.administradortransacciones.avt.dao.model.Transaction;
+import com.administradortransacciones.avt.dao.mongo.mapper.TransactionMapperMongo;
+import com.administradortransacciones.avt.dao.mongo.model.TransactionMongo;
+import com.administradortransacciones.avt.dao.mysql.mapper.TransactionMapperMySql;
+import com.administradortransacciones.avt.dao.mysql.model.TransactionMySql;
 
 @Service
 public class TransactionService {
@@ -17,10 +19,20 @@ public class TransactionService {
 	@Autowired
 	private RepositoryContext repositoryContext;
 
-	public List<TransactionDto> getTransactions() {
+	public List<TransactionDto> getTransactions(int peso, String repository) {
+		List<?> results = repositoryContext.getDatabaseInstance(repository).findAll();
+
+		if (results.isEmpty()) {
+			// TODO: return a message?
+			return new ArrayList<>();
+		}
+
 		List<TransactionDto> list = new ArrayList<>();
-		List<Transaction> results = repositoryContext.getDatabaseInstance("MYSQL").findAll();
-		results.stream().forEach(t -> list.add(TransactionMapper.INSTANCE.transactionToTransactionDto(t)));
+		if (results.get(0) instanceof TransactionMySql) {
+			results.stream().forEach(t -> list.add(TransactionMapperMySql.INSTANCE.transactionToTransactionDto((TransactionMySql) t)));
+		} else if (results.get(0) instanceof TransactionMongo) {
+			results.stream().forEach(t -> list.add(TransactionMapperMongo.INSTANCE.transactionToTransactionDto((TransactionMongo) t)));
+		}
 		return list;
 	}
 }

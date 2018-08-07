@@ -22,8 +22,10 @@ public class TransactionController {
 	private TransactionService transactionService;
 
 	@GetMapping
-	public ResponseEntity<List<TransactionDto>> getTransactions(@RequestParam(value = "peso", defaultValue = "0") int peso) {
-		return new ResponseEntity<List<TransactionDto>>(transactionService.getTransactions(), HttpStatus.OK);
+	public ResponseEntity<List<TransactionDto>> getTransactions(
+					@RequestParam(value = "weight", defaultValue = "-1") int weight,
+					@RequestParam(value = "repository", defaultValue = "MYSQL") String repository) {
+		return new ResponseEntity<List<TransactionDto>>(transactionService.getTransactions(weight, repository), HttpStatus.OK);
 	}
 
 	@PostMapping

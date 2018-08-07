@@ -1,4 +1,4 @@
-package com.administradortransacciones.avt.dao.model;
+package com.administradortransacciones.avt.dao.mysql.model;
 
 import java.util.Date;
 
@@ -9,8 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-@Entity
-public class Transaction {
+@Entity(name = "transaction")
+public class TransactionMySql {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,7 +20,7 @@ public class Transaction {
 	private Date createdDate;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	private TransactionType type;
+	private TransactionTypeMySql type;
 
 	public Long getId() {
 		return id;
@@ -54,11 +54,11 @@ public class Transaction {
 		this.createdDate = createdDate;
 	}
 
-	public TransactionType getType() {
+	public TransactionTypeMySql getType() {
 		return type;
 	}
 
-	public void setType(final TransactionType type) {
+	public void setType(final TransactionTypeMySql type) {
 		this.type = type;
 	}
 
