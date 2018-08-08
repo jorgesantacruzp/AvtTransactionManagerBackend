@@ -6,6 +6,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import com.administradortransacciones.avt.common.dto.TransactionDto;
+import com.administradortransacciones.avt.common.mapper.util.CurrentDate;
 import com.administradortransacciones.avt.dao.mongo.mapper.util.TransactionMapperUtilMongo;
 import com.administradortransacciones.avt.dao.mongo.mapper.util.TransactionTypeToStringMongo;
 import com.administradortransacciones.avt.dao.mongo.model.TransactionMongo;
@@ -20,4 +21,10 @@ public interface TransactionMapperMongo {
 		@Mapping(source = "createdDate", target = "createdDate", dateFormat = "dd/MM/yyyy") 
 	})
 	TransactionDto transactionToTransactionDto(TransactionMongo transaction);
+	
+	@Mappings({ 
+		@Mapping(source = "type", target = "type.name"),
+		@Mapping(source = "createdDate", target = "createdDate", qualifiedBy = CurrentDate.class)
+	})
+	TransactionMongo transactionDtoToTransactionMongo(TransactionDto transaction);
 }

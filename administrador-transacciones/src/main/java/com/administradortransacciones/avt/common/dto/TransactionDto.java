@@ -1,11 +1,12 @@
 package com.administradortransacciones.avt.common.dto;
 
-public class TransactionDto {
+public class TransactionDto extends ApiBase {
 
 	private String name;
-	private int weight;
+	private Integer weight;
 	private String createdDate;
 	private String type;
+	private String dataStructure;
 
 	public String getName() {
 		return name;
@@ -15,11 +16,11 @@ public class TransactionDto {
 		this.name = name;
 	}
 
-	public int getWeight() {
+	public Integer getWeight() {
 		return weight;
 	}
 
-	public void setWeight(final int weight) {
+	public void setWeight(final Integer weight) {
 		this.weight = weight;
 	}
 
@@ -37,6 +38,14 @@ public class TransactionDto {
 
 	public void setType(final String type) {
 		this.type = type;
+	}
+
+	public String getDataStructure() {
+		return dataStructure;
+	}
+
+	public void setDataStructure(final String dataStructure) {
+		this.dataStructure = dataStructure;
 	}
 
 }

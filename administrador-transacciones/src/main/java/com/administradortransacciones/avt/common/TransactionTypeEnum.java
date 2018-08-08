@@ -22,4 +22,9 @@ public enum TransactionTypeEnum {
 		return stream1.filter(t -> t.getId() == id).findFirst().orElse(TransactionTypeEnum.ALL);
 	}
 
+	public static TransactionTypeEnum findByName(final String name) {
+		Stream<TransactionTypeEnum> stream1 = Arrays.stream(TransactionTypeEnum.values());
+		return stream1.filter(t -> t.name().equals(name)).findFirst().orElse(TransactionTypeEnum.ALL);
+	}
+
 }

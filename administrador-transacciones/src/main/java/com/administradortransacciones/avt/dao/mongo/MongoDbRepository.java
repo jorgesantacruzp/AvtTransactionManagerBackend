@@ -16,8 +16,8 @@ public class MongoDbRepository implements TransactionDao<TransactionMongo> {
 	private MongoDbTransactionRepository mongoTransactionRepository;
 
 	@Override
-	public void persist() {
-
+	public TransactionMongo persist(TransactionMongo transaction) {
+		return mongoTransactionRepository.save(transaction);
 	}
 
 	@Override

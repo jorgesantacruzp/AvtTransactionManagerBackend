@@ -1,14 +1,18 @@
 package com.administradortransacciones.avt.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.administradortransacciones.avt.common.ErrorCodesEnum;
+import com.administradortransacciones.avt.common.RepositoryEnum;
 import com.administradortransacciones.avt.common.TransactionTypeEnum;
 import com.administradortransacciones.avt.common.dto.TransactionDto;
 import com.administradortransacciones.avt.dao.RepositoryContext;
+import com.administradortransacciones.avt.dao.TransactionDao;
 import com.administradortransacciones.avt.dao.mongo.mapper.TransactionMapperMongo;
 import com.administradortransacciones.avt.dao.mongo.model.TransactionMongo;
 import com.administradortransacciones.avt.dao.mysql.mapper.TransactionMapperMySql;
@@ -21,7 +25,7 @@ public class TransactionService {
 	private RepositoryContext repositoryContext;
 
 	public List<TransactionDto> getTransactions(final String repository, final int type) {
-		List<?> results = null;
+		List<?> results = Collections.emptyList();
 		TransactionTypeEnum typeEnum = TransactionTypeEnum.findById(type);
 		if (TransactionTypeEnum.ALL.equals(typeEnum)) {
 			results = repositoryContext.getDatabaseInstance(repository).findAll();
@@ -38,7 +42,7 @@ public class TransactionService {
 
 	private List<TransactionDto> buildTransacionDtoList(final List<?> results) {
 		if (results.isEmpty()) {
-			return new ArrayList<>();
+			return Collections.emptyList();
 		}
 
 		final List<TransactionDto> list = new ArrayList<>();
@@ -48,5 +52,25 @@ public class TransactionService {
 			results.stream().forEach(t -> list.add(TransactionMapperMongo.INSTANCE.transactionToTransactionDto((TransactionMongo) t)));
 		}
 		return list;
+	}
+
+	@SuppressWarnings("unchecked")
+	public TransactionDto saveTransaction(final String repository, final TransactionDto request) {
+		TransactionDto result = new TransactionDto();
+		try {
+			TransactionDao<?> dbInstance = repositoryContext.getDatabaseInstance(repository);
+			if (RepositoryEnum.MYSQL.name().equals(repository)) {
+				TransactionMySql mySqlEntity = TransactionMapperMySql.INSTANCE.transactionDtoToTransactionMysql(request);
+				((TransactionDao<TransactionMySql>) dbInstance).persist(mySqlEntity);
+			} else if (RepositoryEnum.MONGODB.name().equals(repository)) {
+				TransactionMongo mongoEntity = TransactionMapperMongo.INSTANCE.transactionDtoToTransactionMongo(request);
+				((TransactionDao<TransactionMongo>) dbInstance).persist(mongoEntity);
+			}
+		} catch (Exception ex) {
+			// TODO: LOG ERRORS
+			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_SAVED.getCode());
+			result.setMessage("There was an error when trying to save transaction");
+		}
+		return result;
 	}
 }

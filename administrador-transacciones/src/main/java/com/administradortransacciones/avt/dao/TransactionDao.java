@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface TransactionDao<T> {
 
-	void persist();
+	T persist(T t);
 
 	List<T> findAll();
 

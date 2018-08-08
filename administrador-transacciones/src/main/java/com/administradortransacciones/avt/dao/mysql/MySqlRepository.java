@@ -18,8 +18,8 @@ public class MySqlRepository implements TransactionDao<TransactionMySql> {
 	private MySqlTransactionRepository mysqlTransactionRepository;
 
 	@Override
-	public void persist() {
-
+	public TransactionMySql persist(final TransactionMySql transaction) {
+		return mysqlTransactionRepository.save(transaction);
 	}
 
 	@Override

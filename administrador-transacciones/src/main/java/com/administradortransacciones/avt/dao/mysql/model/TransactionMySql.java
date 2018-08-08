@@ -2,7 +2,6 @@ package com.administradortransacciones.avt.dao.mysql.model;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,7 +18,7 @@ public class TransactionMySql {
 	private int weight;
 	private Date createdDate;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	private TransactionTypeMySql type;
 
 	public Long getId() {
@@ -60,11 +59,6 @@ public class TransactionMySql {
 
 	public void setType(final TransactionTypeMySql type) {
 		this.type = type;
-	}
-
-	@Override
-	public String toString() {
-		return "Transaction [id=" + id + ", name=" + name + ", weight=" + weight + ", createdDate=" + createdDate + ", type=" + type + "]";
 	}
 
 }
