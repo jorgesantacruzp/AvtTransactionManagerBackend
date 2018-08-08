@@ -2,15 +2,26 @@ package com.administradortransacciones.avt.dao.mongo.model;
 
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "transaccion")
 public class TransactionMongo {
 
+	@Id
+	private String id;
 	private String name;
 	private int weight;
 	private Date createdDate;
 	private TransactionTypeMongo type;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
