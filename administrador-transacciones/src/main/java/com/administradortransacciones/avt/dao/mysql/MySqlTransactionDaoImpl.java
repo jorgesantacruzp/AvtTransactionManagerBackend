@@ -68,4 +68,14 @@ public class MySqlTransactionDaoImpl implements TransactionDao<TransactionMySql>
 		return mysqlTransactionRepository.findById(Long.valueOf(id)).get() != null;
 	}
 
+	@Override
+	public List<TransactionMySql> findByWeightAndType(int weight, String type) {
+		final List<TransactionMySql> results = mysqlTransactionRepository.findByWeightAndType(weight,
+						new TransactionTypeMySql(type));
+		if (results == null) {
+			return new ArrayList<>();
+		}
+		return results;
+	}
+
 }

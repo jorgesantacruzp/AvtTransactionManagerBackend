@@ -60,7 +60,7 @@ public class GetTransactionServiceTest extends BaseTransactionServiceUnitTest {
 	@Test
 	public void shouldGetTransactionsByWeight() {
 		when(transactionDao.findByWeight(1)).thenReturn(Arrays.asList(getTransactionMySqlSample()));
-		List<?> transactions = transactionService.findTransactionByWeight(1);
+		List<?> transactions = transactionService.findTransactionByWeight(1, TransactionTypeEnum.ALL.getId());
 		assertThat(transactions, hasSize(1));
 	}
 
@@ -70,7 +70,15 @@ public class GetTransactionServiceTest extends BaseTransactionServiceUnitTest {
 		thrown.expectMessage(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED.getCode());
 
 		doThrow(new TransactionException()).when(transactionDao).findByWeight(1);
-		transactionService.findTransactionByWeight(1);
+		transactionService.findTransactionByWeight(1, TransactionTypeEnum.ALL.getId());
+	}
+
+	@Test
+	public void shouldGetTransactionsByWeightAndType() {
+		when(transactionDao.findByWeightAndType(1, TransactionTypeEnum.CHECK_CHANGE.name()))
+						.thenReturn(Arrays.asList(getTransactionMySqlSample()));
+		List<?> transactions = transactionService.findTransactionByWeight(1, TransactionTypeEnum.CHECK_CHANGE.getId());
+		assertThat(transactions, hasSize(1));
 	}
 
 }

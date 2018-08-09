@@ -25,14 +25,16 @@ public class TransactionController {
 	private TransactionService transactionService;
 
 	@GetMapping("/v1/transactions")
-	public ResponseEntity<List<TransactionDto>> getTransactions(@RequestParam(value = "type", defaultValue = "-1") final int type) {
+	public ResponseEntity<List<TransactionDto>> getTransactions(
+					@RequestParam(value = "type", defaultValue = "-1") final int type) {
 		final List<TransactionDto> response = transactionService.getTransactions(type);
 		return new ResponseEntity<List<TransactionDto>>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/v1/transactions/{weight}")
-	public ResponseEntity<List<TransactionDto>> getTransaction(@PathVariable(required = false) final int weight) {
-		final List<TransactionDto> response = transactionService.findTransactionByWeight(weight);
+	public ResponseEntity<List<TransactionDto>> getTransaction(@PathVariable(required = false) final int weight,
+					@RequestParam(value = "type", defaultValue = "-1") final int type) {
+		final List<TransactionDto> response = transactionService.findTransactionByWeight(weight, type);
 		return new ResponseEntity<List<TransactionDto>>(response, HttpStatus.OK);
 	}
 
@@ -43,7 +45,8 @@ public class TransactionController {
 	}
 
 	@PutMapping("/v1/transactions/{id}")
-	public ResponseEntity<ApiBase> updateTransaction(@PathVariable final String id, @RequestBody final TransactionDto request) {
+	public ResponseEntity<ApiBase> updateTransaction(@PathVariable final String id,
+					@RequestBody final TransactionDto request) {
 		transactionService.updateTransaction(id, request);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

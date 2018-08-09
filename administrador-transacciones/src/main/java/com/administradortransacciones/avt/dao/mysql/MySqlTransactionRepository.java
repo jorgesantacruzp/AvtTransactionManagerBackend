@@ -12,5 +12,7 @@ public interface MySqlTransactionRepository extends CrudRepository<TransactionMy
 	List<TransactionMySql> findByWeight(int weight);
 
 	List<TransactionMySql> findByType(TransactionTypeMySql type);
+	
+	List<TransactionMySql> findByWeightAndType(int weight, TransactionTypeMySql type);
 
 }

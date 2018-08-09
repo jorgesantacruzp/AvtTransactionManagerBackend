@@ -9,6 +9,8 @@ public interface TransactionDao<T> {
 	List<T> findAll();
 
 	List<T> findByWeight(int weight);
+	
+	List<T> findByWeightAndType(int weight, String type);
 
 	List<T> findByType(String type);
 

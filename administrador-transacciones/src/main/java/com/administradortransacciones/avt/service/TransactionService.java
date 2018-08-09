@@ -46,9 +46,15 @@ public class TransactionService {
 		}
 	}
 
-	public List<TransactionDto> findTransactionByWeight(final int weight) {
+	public List<TransactionDto> findTransactionByWeight(final int weight, final int type) {
 		try {
-			final List<?> transactions = repositoryContext.getDatabaseInstance().findByWeight(weight);
+			List<?> transactions = Collections.emptyList();
+			final TransactionTypeEnum typeEnum = TransactionTypeEnum.findById(type);
+			if (TransactionTypeEnum.ALL.equals(typeEnum)) {
+				transactions = repositoryContext.getDatabaseInstance().findByWeight(weight);
+			} else {
+				transactions = repositoryContext.getDatabaseInstance().findByWeightAndType(weight, typeEnum.name());
+			}
 			return buildTransacionDtoList(transactions);
 		} catch (final Exception e) {
 			LOGGER.error(e.getMessage(), e);

@@ -65,4 +65,13 @@ public class MongoDbTransactionDaoImpl implements TransactionDao<TransactionMong
 		return mongoTransactionRepository.findById(id).get() != null;
 	}
 
+	@Override
+	public List<TransactionMongo> findByWeightAndType(final int weight, final String type) {
+		final List<TransactionMongo> results = mongoTransactionRepository.findByWeightAndTypeName(weight, type);
+		if (results == null) {
+			return new ArrayList<>();
+		}
+		return results;
+	}
+
 }
