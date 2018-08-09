@@ -6,24 +6,15 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
-import com.administradortransacciones.avt.dao.RepositoryContext;
-import com.administradortransacciones.avt.dao.TransactionDao;
 import com.administradortransacciones.avt.service.TransactionService;
 import com.administradortransacciones.avt.unit.BaseSpringUnitTest;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings("unchecked")
 public abstract class BaseTransactionServiceUnitTest extends BaseSpringUnitTest {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
-
-	@Mock
-	protected TransactionDao transactionDao;
-
-	@Mock
-	protected RepositoryContext repositoryContext;
 
 	@InjectMocks
 	protected TransactionService transactionService;
