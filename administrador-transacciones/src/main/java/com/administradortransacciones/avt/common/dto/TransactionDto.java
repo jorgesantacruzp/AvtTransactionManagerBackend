@@ -1,6 +1,10 @@
 package com.administradortransacciones.avt.common.dto;
 
-public class TransactionDto extends ApiBase {
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(value = Include.NON_NULL)
+public class TransactionDto {
 
 	private String id;
 	private String name;

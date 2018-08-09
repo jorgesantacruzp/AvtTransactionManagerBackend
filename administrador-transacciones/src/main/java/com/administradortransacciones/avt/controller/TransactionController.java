@@ -26,20 +26,26 @@ public class TransactionController {
 	private TransactionService transactionService;
 
 	@GetMapping("/v1/transactions")
-	public ResponseEntity<List<TransactionDto>> getTransactions(
-					@RequestParam(value = "type", defaultValue = "-1") final int type) {
-		return new ResponseEntity<List<TransactionDto>>(transactionService.getTransactions(type), HttpStatus.OK);
+	public ResponseEntity<?> getTransactions(@RequestParam(value = "type", defaultValue = "-1") final int type) {
+		final ApiBase response = transactionService.getTransactions(type);
+		if (StringUtils.isEmpty(response.getMessage())) {
+			return new ResponseEntity<List<TransactionDto>>(response.getTransactions(), HttpStatus.OK);
+		}
+		return new ResponseEntity<ApiBase>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@GetMapping("/v1/transactions/{weight}")
-	public ResponseEntity<List<TransactionDto>> getTransaction(
-					@PathVariable(required = false) final int weight) {
-		return new ResponseEntity<List<TransactionDto>>(transactionService.findTransactionByWeight(weight), HttpStatus.OK);
+	public ResponseEntity<?> getTransaction(@PathVariable(required = false) final int weight) {
+		final ApiBase response = transactionService.findTransactionByWeight(weight);
+		if (StringUtils.isEmpty(response.getMessage())) {
+			return new ResponseEntity<List<TransactionDto>>(response.getTransactions(), HttpStatus.OK);
+		}
+		return new ResponseEntity<ApiBase>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@PostMapping("/v1/transactions")
-	public ResponseEntity<ApiBase> saveTransaction(@RequestBody TransactionDto request) {
-		ApiBase response = transactionService.saveTransaction(request);
+	public ResponseEntity<ApiBase> saveTransaction(@RequestBody final TransactionDto request) {
+		final ApiBase response = transactionService.saveTransaction(request);
 		if (StringUtils.isEmpty(response.getMessage())) {
 			return new ResponseEntity<ApiBase>(HttpStatus.CREATED);
 		}

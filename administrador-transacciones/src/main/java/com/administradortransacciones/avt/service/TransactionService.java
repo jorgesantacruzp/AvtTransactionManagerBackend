@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.administradortransacciones.avt.common.ErrorCodesEnum;
 import com.administradortransacciones.avt.common.TransactionTypeEnum;
+import com.administradortransacciones.avt.common.dto.ApiBase;
 import com.administradortransacciones.avt.common.dto.TransactionDto;
 import com.administradortransacciones.avt.common.util.RepositoryUtil;
 import com.administradortransacciones.avt.dao.RepositoryContext;
@@ -24,49 +25,65 @@ public class TransactionService {
 	@Autowired
 	private RepositoryContext repositoryContext;
 
-	public List<TransactionDto> getTransactions(final int type) {
-		List<?> results = Collections.emptyList();
-		TransactionTypeEnum typeEnum = TransactionTypeEnum.findById(type);
-		if (TransactionTypeEnum.ALL.equals(typeEnum)) {
-			results = repositoryContext.getDatabaseInstance().findAll();
-		} else {
-			results = repositoryContext.getDatabaseInstance().findByType(typeEnum.name());
+	public ApiBase getTransactions(final int type) {
+		final ApiBase result = new ApiBase();
+		try {
+			List<?> transactions = Collections.emptyList();
+			final TransactionTypeEnum typeEnum = TransactionTypeEnum.findById(type);
+			if (TransactionTypeEnum.ALL.equals(typeEnum)) {
+				transactions = repositoryContext.getDatabaseInstance().findAll();
+			} else {
+				transactions = repositoryContext.getDatabaseInstance().findByType(typeEnum.name());
+			}
+			result.setTransactions(buildTransacionDtoList(transactions));
+		} catch (final Exception e) {
+			// TODO: LOG ERRORS
+			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED.getCode());
+			result.setMessage("There was an error when trying to fetch transactions");
 		}
-		return buildTransacionDtoList(results);
+		return result;
 	}
 
-	public List<TransactionDto> findTransactionByWeight(final int weight) {
-		final List<?> results = repositoryContext.getDatabaseInstance().findByWeight(weight);
-		return buildTransacionDtoList(results);
+	public ApiBase findTransactionByWeight(final int weight) {
+		final ApiBase result = new ApiBase();
+		try {
+			final List<?> transactions = repositoryContext.getDatabaseInstance().findByWeight(weight);
+			result.setTransactions(buildTransacionDtoList(transactions));
+		} catch (final Exception e) {
+			// TODO: LOG ERRORS
+			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED.getCode());
+			result.setMessage("There was an error when trying to fetch transactions");
+		}
+		return result;
 	}
 
-	private List<TransactionDto> buildTransacionDtoList(final List<?> results) {
-		if (results.isEmpty()) {
+	private List<TransactionDto> buildTransacionDtoList(final List<?> transactions) {
+		if (transactions.isEmpty()) {
 			return Collections.emptyList();
 		}
 
 		final List<TransactionDto> list = new ArrayList<>();
-		if (results.get(0) instanceof TransactionMySql) {
-			results.stream().forEach(t -> list.add(TransactionMapperMySql.INSTANCE.transactionToTransactionDto((TransactionMySql) t)));
-		} else if (results.get(0) instanceof TransactionMongo) {
-			results.stream().forEach(t -> list.add(TransactionMapperMongo.INSTANCE.transactionToTransactionDto((TransactionMongo) t)));
+		if (transactions.get(0) instanceof TransactionMySql) {
+			transactions.stream().forEach(t -> list.add(TransactionMapperMySql.INSTANCE.transactionToTransactionDto((TransactionMySql) t)));
+		} else if (transactions.get(0) instanceof TransactionMongo) {
+			transactions.stream().forEach(t -> list.add(TransactionMapperMongo.INSTANCE.transactionToTransactionDto((TransactionMongo) t)));
 		}
 		return list;
 	}
 
 	@SuppressWarnings("unchecked")
-	public TransactionDto saveTransaction(final TransactionDto request) {
-		TransactionDto result = new TransactionDto();
+	public ApiBase saveTransaction(final TransactionDto request) {
+		final ApiBase result = new ApiBase();
 		try {
-			TransactionDao<?> dbInstance = repositoryContext.getDatabaseInstance();
+			final TransactionDao<?> dbInstance = repositoryContext.getDatabaseInstance();
 			if (RepositoryUtil.isMySql()) {
-				TransactionMySql mySqlEntity = TransactionMapperMySql.INSTANCE.transactionDtoToTransactionMysql(request);
+				final TransactionMySql mySqlEntity = TransactionMapperMySql.INSTANCE.transactionDtoToTransactionMysql(request);
 				((TransactionDao<TransactionMySql>) dbInstance).persist(mySqlEntity);
 			} else if (RepositoryUtil.isMongoDb()) {
-				TransactionMongo mongoEntity = TransactionMapperMongo.INSTANCE.transactionDtoToTransactionMongo(request);
+				final TransactionMongo mongoEntity = TransactionMapperMongo.INSTANCE.transactionDtoToTransactionMongo(request);
 				((TransactionDao<TransactionMongo>) dbInstance).persist(mongoEntity);
 			}
-		} catch (Exception ex) {
+		} catch (final Exception e) {
 			// TODO: LOG ERRORS
 			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_SAVED.getCode());
 			result.setMessage("There was an error when trying to save transaction");
