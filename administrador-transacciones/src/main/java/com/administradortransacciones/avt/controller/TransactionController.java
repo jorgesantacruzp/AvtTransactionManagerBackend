@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,49 +25,32 @@ public class TransactionController {
 	private TransactionService transactionService;
 
 	@GetMapping("/v1/transactions")
-	public ResponseEntity<?> getTransactions(@RequestParam(value = "type", defaultValue = "-1") final int type) {
-		final ApiBase response = transactionService.getTransactions(type);
-		if (StringUtils.isEmpty(response.getMessage())) {
-			return new ResponseEntity<List<TransactionDto>>(response.getTransactions(), HttpStatus.OK);
-		}
-		return new ResponseEntity<ApiBase>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	public ResponseEntity<List<TransactionDto>> getTransactions(@RequestParam(value = "type", defaultValue = "-1") final int type) {
+		final List<TransactionDto> response = transactionService.getTransactions(type);
+		return new ResponseEntity<List<TransactionDto>>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/v1/transactions/{weight}")
-	public ResponseEntity<?> getTransaction(@PathVariable(required = false) final int weight) {
-		final ApiBase response = transactionService.findTransactionByWeight(weight);
-		if (StringUtils.isEmpty(response.getMessage())) {
-			return new ResponseEntity<List<TransactionDto>>(response.getTransactions(), HttpStatus.OK);
-		}
-		return new ResponseEntity<ApiBase>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	public ResponseEntity<List<TransactionDto>> getTransaction(@PathVariable(required = false) final int weight) {
+		final List<TransactionDto> response = transactionService.findTransactionByWeight(weight);
+		return new ResponseEntity<List<TransactionDto>>(response, HttpStatus.OK);
 	}
 
 	@PostMapping("/v1/transactions")
 	public ResponseEntity<ApiBase> saveTransaction(@RequestBody final TransactionDto request) {
-		final ApiBase response = transactionService.saveTransaction(request);
-		if (StringUtils.isEmpty(response.getMessage())) {
-			return new ResponseEntity<>(HttpStatus.CREATED);
-		}
-		return new ResponseEntity<ApiBase>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		transactionService.saveTransaction(request);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@PutMapping("/v1/transactions/{id}")
-	public ResponseEntity<ApiBase> updateTransaction(
-					@PathVariable final String id,
-					@RequestBody final TransactionDto request) {
-		final ApiBase response = transactionService.updateTransaction(id, request);
-		if (StringUtils.isEmpty(response.getMessage())) {
-			return new ResponseEntity<>(HttpStatus.OK);
-		}
-		return new ResponseEntity<ApiBase>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	public ResponseEntity<ApiBase> updateTransaction(@PathVariable final String id, @RequestBody final TransactionDto request) {
+		transactionService.updateTransaction(id, request);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@DeleteMapping("/v1/transactions/{id}")
 	public ResponseEntity<ApiBase> deleteTransaction(@PathVariable final String id) {
-		final ApiBase response = transactionService.deleteTransaction(id);
-		if (StringUtils.isEmpty(response.getMessage())) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<ApiBase>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		transactionService.deleteTransaction(id);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }

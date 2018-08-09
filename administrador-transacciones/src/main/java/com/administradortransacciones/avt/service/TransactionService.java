@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.administradortransacciones.avt.common.ErrorCodesEnum;
 import com.administradortransacciones.avt.common.TransactionTypeEnum;
-import com.administradortransacciones.avt.common.dto.ApiBase;
 import com.administradortransacciones.avt.common.dto.TransactionDto;
+import com.administradortransacciones.avt.common.exception.TransactionException;
 import com.administradortransacciones.avt.common.util.RepositoryUtil;
 import com.administradortransacciones.avt.dao.RepositoryContext;
 import com.administradortransacciones.avt.dao.TransactionDao;
@@ -30,8 +30,7 @@ public class TransactionService {
 	@Autowired
 	private RepositoryContext repositoryContext;
 
-	public ApiBase getTransactions(final int type) {
-		final ApiBase result = new ApiBase();
+	public List<TransactionDto> getTransactions(final int type) {
 		try {
 			List<?> transactions = Collections.emptyList();
 			final TransactionTypeEnum typeEnum = TransactionTypeEnum.findById(type);
@@ -40,26 +39,21 @@ public class TransactionService {
 			} else {
 				transactions = repositoryContext.getDatabaseInstance().findByType(typeEnum.name());
 			}
-			result.setTransactions(buildTransacionDtoList(transactions));
+			return buildTransacionDtoList(transactions);
 		} catch (final Exception e) {
 			LOGGER.error(e.getMessage(), e);
-			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED.getCode());
-			result.setMessage("There was an error when trying to fetch transactions");
+			throw new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED);
 		}
-		return result;
 	}
 
-	public ApiBase findTransactionByWeight(final int weight) {
-		final ApiBase result = new ApiBase();
+	public List<TransactionDto> findTransactionByWeight(final int weight) {
 		try {
 			final List<?> transactions = repositoryContext.getDatabaseInstance().findByWeight(weight);
-			result.setTransactions(buildTransacionDtoList(transactions));
+			return buildTransacionDtoList(transactions);
 		} catch (final Exception e) {
 			LOGGER.error(e.getMessage(), e);
-			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED.getCode());
-			result.setMessage("There was an error when trying to fetch transactions");
+			throw new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED);
 		}
-		return result;
 	}
 
 	private List<TransactionDto> buildTransacionDtoList(final List<?> transactions) {
@@ -76,21 +70,17 @@ public class TransactionService {
 		return list;
 	}
 
-	public ApiBase saveTransaction(final TransactionDto request) {
-		final ApiBase result = new ApiBase();
+	public void saveTransaction(final TransactionDto request) {
 		try {
 			final TransactionDao<?> transactionDao = repositoryContext.getDatabaseInstance();
 			persistEntity(request, transactionDao);
 		} catch (final Exception e) {
 			LOGGER.error(e.getMessage(), e);
-			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_SAVED.getCode());
-			result.setMessage("There was an error when trying to save transaction");
+			throw new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_SAVED);
 		}
-		return result;
 	}
 
-	public ApiBase updateTransaction(final String id, final TransactionDto request) {
-		final ApiBase result = new ApiBase();
+	public void updateTransaction(final String id, final TransactionDto request) {
 		try {
 			final TransactionDao<?> transactionDao = repositoryContext.getDatabaseInstance();
 			// NoSuchElementException is thrown if transaction does not exist
@@ -99,18 +89,14 @@ public class TransactionService {
 			persistEntity(request, transactionDao);
 		} catch (final NoSuchElementException nse) {
 			LOGGER.error(nse.getMessage(), nse);
-			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND.getCode());
-			result.setMessage(String.format("Transaction with id %s does not exist", id));
+			throw new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND);
 		} catch (final Exception e) {
 			LOGGER.error(e.getMessage(), e);
-			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_UPDATED.getCode());
-			result.setMessage("There was an error when trying to update transaction");
+			throw new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_UPDATED);
 		}
-		return result;
 	}
 
-	public ApiBase deleteTransaction(final String id) {
-		final ApiBase result = new ApiBase();
+	public void deleteTransaction(final String id) {
 		try {
 			final TransactionDao<?> transactionDao = repositoryContext.getDatabaseInstance();
 			// NoSuchElementException is thrown if transaction does not exist
@@ -118,14 +104,11 @@ public class TransactionService {
 			transactionDao.delete(id);
 		} catch (final NoSuchElementException nse) {
 			LOGGER.error(nse.getMessage(), nse);
-			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND.getCode());
-			result.setMessage(String.format("Transaction with id %s does not exist", id));
+			throw new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND);
 		} catch (final Exception e) {
 			LOGGER.error(e.getMessage(), e);
-			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_DELETED.getCode());
-			result.setMessage("There was an error when trying to delete transaction");
+			throw new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_DELETED);
 		}
-		return result;
 	}
 
 	@SuppressWarnings("unchecked")
