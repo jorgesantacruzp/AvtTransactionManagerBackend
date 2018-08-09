@@ -16,13 +16,13 @@ public class MongoDbRepository implements TransactionDao<TransactionMongo> {
 	private MongoDbTransactionRepository mongoTransactionRepository;
 
 	@Override
-	public TransactionMongo persist(TransactionMongo transaction) {
+	public TransactionMongo persist(final TransactionMongo transaction) {
 		return mongoTransactionRepository.save(transaction);
 	}
 
 	@Override
 	public List<TransactionMongo> findAll() {
-		List<TransactionMongo> results = mongoTransactionRepository.findAll();
+		final List<TransactionMongo> results = mongoTransactionRepository.findAll();
 		if (results == null) {
 			return new ArrayList<>();
 		}
@@ -31,7 +31,7 @@ public class MongoDbRepository implements TransactionDao<TransactionMongo> {
 
 	@Override
 	public List<TransactionMongo> findByWeight(final int weight) {
-		List<TransactionMongo> results = mongoTransactionRepository.findByWeight(weight);
+		final List<TransactionMongo> results = mongoTransactionRepository.findByWeight(weight);
 		if (results == null) {
 			return new ArrayList<>();
 		}
@@ -40,7 +40,7 @@ public class MongoDbRepository implements TransactionDao<TransactionMongo> {
 
 	@Override
 	public List<TransactionMongo> findByType(final String type) {
-		List<TransactionMongo> results = mongoTransactionRepository.findByTypeName(type);
+		final List<TransactionMongo> results = mongoTransactionRepository.findByTypeName(type);
 		if (results == null) {
 			return new ArrayList<>();
 		}
@@ -55,6 +55,11 @@ public class MongoDbRepository implements TransactionDao<TransactionMongo> {
 	@Override
 	public int count() {
 		return Long.valueOf(mongoTransactionRepository.count()).intValue();
+	}
+
+	@Override
+	public TransactionMongo findById(final String id) {
+		return mongoTransactionRepository.findById(id).get();
 	}
 
 }

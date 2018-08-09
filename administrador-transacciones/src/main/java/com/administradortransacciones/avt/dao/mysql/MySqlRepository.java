@@ -25,7 +25,7 @@ public class MySqlRepository implements TransactionDao<TransactionMySql> {
 
 	@Override
 	public List<TransactionMySql> findAll() {
-		Iterable<TransactionMySql> results = mysqlTransactionRepository.findAll();
+		final Iterable<TransactionMySql> results = mysqlTransactionRepository.findAll();
 		if (results == null) {
 			return new ArrayList<>();
 		}
@@ -34,7 +34,7 @@ public class MySqlRepository implements TransactionDao<TransactionMySql> {
 
 	@Override
 	public List<TransactionMySql> findByWeight(final int weight) {
-		List<TransactionMySql> results = mysqlTransactionRepository.findByWeight(weight);
+		final List<TransactionMySql> results = mysqlTransactionRepository.findByWeight(weight);
 		if (results == null) {
 			return new ArrayList<>();
 		}
@@ -43,7 +43,7 @@ public class MySqlRepository implements TransactionDao<TransactionMySql> {
 
 	@Override
 	public List<TransactionMySql> findByType(final String type) {
-		List<TransactionMySql> results = mysqlTransactionRepository.findByType(new TransactionTypeMySql(type));
+		final List<TransactionMySql> results = mysqlTransactionRepository.findByType(new TransactionTypeMySql(type));
 		if (results == null) {
 			return new ArrayList<>();
 		}
@@ -58,6 +58,11 @@ public class MySqlRepository implements TransactionDao<TransactionMySql> {
 	@Override
 	public int count() {
 		return Long.valueOf(mysqlTransactionRepository.count()).intValue();
+	}
+
+	@Override
+	public TransactionMySql findById(final String id) {
+		return mysqlTransactionRepository.findById(Long.valueOf(id)).get();
 	}
 
 }

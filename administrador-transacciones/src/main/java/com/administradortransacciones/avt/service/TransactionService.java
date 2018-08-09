@@ -3,6 +3,7 @@ package com.administradortransacciones.avt.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,23 +72,51 @@ public class TransactionService {
 		return list;
 	}
 
-	@SuppressWarnings("unchecked")
 	public ApiBase saveTransaction(final TransactionDto request) {
 		final ApiBase result = new ApiBase();
 		try {
 			final TransactionDao<?> dbInstance = repositoryContext.getDatabaseInstance();
-			if (RepositoryUtil.isMySql()) {
-				final TransactionMySql mySqlEntity = TransactionMapperMySql.INSTANCE.transactionDtoToTransactionMysql(request);
-				((TransactionDao<TransactionMySql>) dbInstance).persist(mySqlEntity);
-			} else if (RepositoryUtil.isMongoDb()) {
-				final TransactionMongo mongoEntity = TransactionMapperMongo.INSTANCE.transactionDtoToTransactionMongo(request);
-				((TransactionDao<TransactionMongo>) dbInstance).persist(mongoEntity);
-			}
+			persistEntity(request, dbInstance);
 		} catch (final Exception e) {
 			// TODO: LOG ERRORS
 			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_SAVED.getCode());
 			result.setMessage("There was an error when trying to save transaction");
 		}
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public ApiBase updateTransaction(final String id, final TransactionDto request) {
+		final ApiBase result = new ApiBase();
+		try {
+			final TransactionDao<?> dbInstance = repositoryContext.getDatabaseInstance();
+			if (RepositoryUtil.isMySql()) {
+				((TransactionDao<TransactionMySql>) dbInstance).findById(id);
+			} else if (RepositoryUtil.isMongoDb()) {
+				((TransactionDao<TransactionMongo>) dbInstance).findById(id);
+			}
+			request.setId(id);
+			persistEntity(request, dbInstance);
+		} catch (final NoSuchElementException nse) {
+			// TODO: LOG ERRORS
+			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND.getCode());
+			result.setMessage(String.format("Transaction with id %s does not exist", id));
+		} catch (final Exception e) {
+			// TODO: LOG ERRORS
+			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_UPDATED.getCode());
+			result.setMessage("There was an error when trying to update transaction");
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void persistEntity(final TransactionDto request, final TransactionDao<?> dbInstance) {
+		if (RepositoryUtil.isMySql()) {
+			final TransactionMySql mySqlEntity = TransactionMapperMySql.INSTANCE.transactionDtoToTransactionMysql(request);
+			((TransactionDao<TransactionMySql>) dbInstance).persist(mySqlEntity);
+		} else if (RepositoryUtil.isMongoDb()) {
+			final TransactionMongo mongoEntity = TransactionMapperMongo.INSTANCE.transactionDtoToTransactionMongo(request);
+			((TransactionDao<TransactionMongo>) dbInstance).persist(mongoEntity);
+		}
 	}
 }

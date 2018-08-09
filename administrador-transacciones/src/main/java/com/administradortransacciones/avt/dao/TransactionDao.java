@@ -12,6 +12,8 @@ public interface TransactionDao<T> {
 
 	List<T> findByType(String type);
 
+	T findById(String id);
+
 	void delete();
 
 	int count();

@@ -52,9 +52,15 @@ public class TransactionController {
 		return new ResponseEntity<ApiBase>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@PutMapping("/v1/transactions")
-	public ResponseEntity<String> updateTransaction() {
-		return new ResponseEntity<String>("update", HttpStatus.OK);
+	@PutMapping("/v1/transactions/{id}")
+	public ResponseEntity<ApiBase> updateTransaction(
+					@PathVariable final String id,
+					@RequestBody final TransactionDto request) {
+		final ApiBase response = transactionService.updateTransaction(id, request);
+		if (StringUtils.isEmpty(response.getMessage())) {
+			return new ResponseEntity<ApiBase>(HttpStatus.OK);
+		}
+		return new ResponseEntity<ApiBase>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@DeleteMapping("/v1/transactions")
