@@ -1,4 +1,4 @@
-package com.administradortransacciones.avt.unit.service;
+package com.administradortransacciones.avt.unit.service.transaction;
 
 import static org.mockito.Mockito.doThrow;
 
@@ -11,9 +11,8 @@ import com.administradortransacciones.avt.common.RepositoryEnum;
 import com.administradortransacciones.avt.common.dto.TransactionDto;
 import com.administradortransacciones.avt.common.exception.TransactionException;
 import com.administradortransacciones.avt.common.util.RepositoryUtil;
-import com.administradortransacciones.avt.unit.BaseSpringUnitTest;
 
-public class UpdateTransactionServiceTest extends BaseSpringUnitTest {
+public class UpdateTransactionServiceTest extends BaseTransactionServiceUnitTest {
 
 	@Test
 	public void shouldUpdateTransactionInMySql() {

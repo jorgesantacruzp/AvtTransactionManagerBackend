@@ -1,4 +1,4 @@
-package com.administradortransacciones.avt.unit.service;
+package com.administradortransacciones.avt.unit.service.transaction;
 
 import static com.administradortransacciones.avt.unit.util.TransactionTestUtil.getTransactionMongoSample;
 import static com.administradortransacciones.avt.unit.util.TransactionTestUtil.getTransactionMySqlSample;
@@ -16,9 +16,8 @@ import org.junit.Test;
 import com.administradortransacciones.avt.common.ErrorCodesEnum;
 import com.administradortransacciones.avt.common.TransactionTypeEnum;
 import com.administradortransacciones.avt.common.exception.TransactionException;
-import com.administradortransacciones.avt.unit.BaseSpringUnitTest;
 
-public class GetTransactionServiceTest extends BaseSpringUnitTest {
+public class GetTransactionServiceTest extends BaseTransactionServiceUnitTest {
 
 	@Test
 	public void shouldGetAllTransactionsFromMySql() {

@@ -1,4 +1,4 @@
-package com.administradortransacciones.avt.unit.service;
+package com.administradortransacciones.avt.unit.service.transaction;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -9,9 +9,8 @@ import org.junit.Test;
 
 import com.administradortransacciones.avt.common.ErrorCodesEnum;
 import com.administradortransacciones.avt.common.exception.TransactionException;
-import com.administradortransacciones.avt.unit.BaseSpringUnitTest;
 
-public class DeleteTransactionServiceTest extends BaseSpringUnitTest {
+public class DeleteTransactionServiceTest extends BaseTransactionServiceUnitTest {
 
 	@Test
 	public void shouldDeleteTransaction() {
