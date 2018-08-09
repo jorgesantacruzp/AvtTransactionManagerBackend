@@ -27,24 +27,19 @@ public class TransactionController {
 
 	@GetMapping("/v1/transactions")
 	public ResponseEntity<List<TransactionDto>> getTransactions(
-					@RequestParam(value = "type", defaultValue = "-1") final int type,
-					@RequestParam(value = "repository", defaultValue = "MYSQL") final String repository) {
-		return new ResponseEntity<List<TransactionDto>>(transactionService.getTransactions(repository, type), HttpStatus.OK);
+					@RequestParam(value = "type", defaultValue = "-1") final int type) {
+		return new ResponseEntity<List<TransactionDto>>(transactionService.getTransactions(type), HttpStatus.OK);
 	}
 
 	@GetMapping("/v1/transactions/{weight}")
 	public ResponseEntity<List<TransactionDto>> getTransaction(
-					@PathVariable(required = false) final int weight, 
-					@RequestParam(value = "type", defaultValue = "-1") final String type,
-					@RequestParam(value = "repository", defaultValue = "MYSQL") final String repository) {
-		return new ResponseEntity<List<TransactionDto>>(transactionService.findTransactionByWeight(repository, weight, type), HttpStatus.OK);
+					@PathVariable(required = false) final int weight) {
+		return new ResponseEntity<List<TransactionDto>>(transactionService.findTransactionByWeight(weight), HttpStatus.OK);
 	}
 
 	@PostMapping("/v1/transactions")
-	public ResponseEntity<ApiBase> saveTransaction(
-					@RequestBody TransactionDto request,
-					@RequestParam(value = "repository", defaultValue = "MYSQL") final String repository) {
-		ApiBase response = transactionService.saveTransaction(repository, request);
+	public ResponseEntity<ApiBase> saveTransaction(@RequestBody TransactionDto request) {
+		ApiBase response = transactionService.saveTransaction(request);
 		if (StringUtils.isEmpty(response.getMessage())) {
 			return new ResponseEntity<ApiBase>(HttpStatus.CREATED);
 		}

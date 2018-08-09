@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.administradortransacciones.avt.common.ErrorCodesEnum;
-import com.administradortransacciones.avt.common.RepositoryEnum;
 import com.administradortransacciones.avt.common.TransactionTypeEnum;
 import com.administradortransacciones.avt.common.dto.TransactionDto;
+import com.administradortransacciones.avt.common.util.RepositoryUtil;
 import com.administradortransacciones.avt.dao.RepositoryContext;
 import com.administradortransacciones.avt.dao.TransactionDao;
 import com.administradortransacciones.avt.dao.mongo.mapper.TransactionMapperMongo;
@@ -24,19 +24,19 @@ public class TransactionService {
 	@Autowired
 	private RepositoryContext repositoryContext;
 
-	public List<TransactionDto> getTransactions(final String repository, final int type) {
+	public List<TransactionDto> getTransactions(final int type) {
 		List<?> results = Collections.emptyList();
 		TransactionTypeEnum typeEnum = TransactionTypeEnum.findById(type);
 		if (TransactionTypeEnum.ALL.equals(typeEnum)) {
-			results = repositoryContext.getDatabaseInstance(repository).findAll();
+			results = repositoryContext.getDatabaseInstance().findAll();
 		} else {
-			results = repositoryContext.getDatabaseInstance(repository).findByType(typeEnum.name());
+			results = repositoryContext.getDatabaseInstance().findByType(typeEnum.name());
 		}
 		return buildTransacionDtoList(results);
 	}
 
-	public List<TransactionDto> findTransactionByWeight(final String repository, final int weight, final String type) {
-		final List<?> results = repositoryContext.getDatabaseInstance(repository).findByWeight(weight);
+	public List<TransactionDto> findTransactionByWeight(final int weight) {
+		final List<?> results = repositoryContext.getDatabaseInstance().findByWeight(weight);
 		return buildTransacionDtoList(results);
 	}
 
@@ -55,14 +55,14 @@ public class TransactionService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public TransactionDto saveTransaction(final String repository, final TransactionDto request) {
+	public TransactionDto saveTransaction(final TransactionDto request) {
 		TransactionDto result = new TransactionDto();
 		try {
-			TransactionDao<?> dbInstance = repositoryContext.getDatabaseInstance(repository);
-			if (RepositoryEnum.MYSQL.name().equals(repository)) {
+			TransactionDao<?> dbInstance = repositoryContext.getDatabaseInstance();
+			if (RepositoryUtil.isMySql()) {
 				TransactionMySql mySqlEntity = TransactionMapperMySql.INSTANCE.transactionDtoToTransactionMysql(request);
 				((TransactionDao<TransactionMySql>) dbInstance).persist(mySqlEntity);
-			} else if (RepositoryEnum.MONGODB.name().equals(repository)) {
+			} else if (RepositoryUtil.isMongoDb()) {
 				TransactionMongo mongoEntity = TransactionMapperMongo.INSTANCE.transactionDtoToTransactionMongo(request);
 				((TransactionDao<TransactionMongo>) dbInstance).persist(mongoEntity);
 			}

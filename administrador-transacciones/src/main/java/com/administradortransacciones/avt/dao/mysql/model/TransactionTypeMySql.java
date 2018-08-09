@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.administradortransacciones.avt.common.TransactionTypeEnum;
+
 @Entity(name = "transactionType")
 public class TransactionTypeMySql {
 
@@ -13,6 +15,20 @@ public class TransactionTypeMySql {
 	private Long id;
 	private String name;
 	private String dataStructure;
+
+	public TransactionTypeMySql() {
+		super();
+	}
+	public TransactionTypeMySql(final String name) {
+		this();
+		this.id = Long.valueOf(TransactionTypeEnum.findByName(name).getId());
+		this.name = name;
+	}
+
+	public TransactionTypeMySql(final String name, final String dataStructure) {
+		this(name);
+		this.dataStructure = dataStructure;
+	}
 
 	public Long getId() {
 		return id;

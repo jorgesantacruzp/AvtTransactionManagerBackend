@@ -13,4 +13,6 @@ public interface TransactionDao<T> {
 	List<T> findByType(String type);
 
 	void delete();
+
+	int count();
 }

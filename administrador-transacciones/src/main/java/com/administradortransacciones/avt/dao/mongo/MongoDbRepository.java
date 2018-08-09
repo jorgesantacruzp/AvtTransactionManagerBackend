@@ -52,4 +52,9 @@ public class MongoDbRepository implements TransactionDao<TransactionMongo> {
 
 	}
 
+	@Override
+	public int count() {
+		return Long.valueOf(mongoTransactionRepository.count()).intValue();
+	}
+
 }

@@ -11,4 +11,5 @@ public interface MongoDbTransactionRepository extends MongoRepository<Transactio
 	List<TransactionMongo> findByWeight(int weight);
 
 	List<TransactionMongo> findByTypeName(String type);
+
 }

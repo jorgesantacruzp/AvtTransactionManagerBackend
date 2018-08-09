@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.administradortransacciones.avt.dao.TransactionDao;
 import com.administradortransacciones.avt.dao.mysql.model.TransactionMySql;
+import com.administradortransacciones.avt.dao.mysql.model.TransactionTypeMySql;
 
 @Repository
 public class MySqlRepository implements TransactionDao<TransactionMySql> {
@@ -42,7 +43,7 @@ public class MySqlRepository implements TransactionDao<TransactionMySql> {
 
 	@Override
 	public List<TransactionMySql> findByType(final String type) {
-		List<TransactionMySql> results = mysqlTransactionRepository.findByTypeName(type);
+		List<TransactionMySql> results = mysqlTransactionRepository.findByType(new TransactionTypeMySql(type));
 		if (results == null) {
 			return new ArrayList<>();
 		}
@@ -52,6 +53,11 @@ public class MySqlRepository implements TransactionDao<TransactionMySql> {
 	@Override
 	public void delete() {
 
+	}
+
+	@Override
+	public int count() {
+		return Long.valueOf(mysqlTransactionRepository.count()).intValue();
 	}
 
 }
