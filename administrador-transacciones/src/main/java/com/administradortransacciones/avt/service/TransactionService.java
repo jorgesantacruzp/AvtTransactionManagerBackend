@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ import com.administradortransacciones.avt.dao.mysql.model.TransactionMySql;
 @Service
 public class TransactionService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(TransactionService.class);
+
 	@Autowired
 	private RepositoryContext repositoryContext;
 
@@ -38,7 +42,7 @@ public class TransactionService {
 			}
 			result.setTransactions(buildTransacionDtoList(transactions));
 		} catch (final Exception e) {
-			// TODO: LOG ERRORS
+			LOGGER.error(e.getMessage(), e);
 			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED.getCode());
 			result.setMessage("There was an error when trying to fetch transactions");
 		}
@@ -51,7 +55,7 @@ public class TransactionService {
 			final List<?> transactions = repositoryContext.getDatabaseInstance().findByWeight(weight);
 			result.setTransactions(buildTransacionDtoList(transactions));
 		} catch (final Exception e) {
-			// TODO: LOG ERRORS
+			LOGGER.error(e.getMessage(), e);
 			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED.getCode());
 			result.setMessage("There was an error when trying to fetch transactions");
 		}
@@ -78,7 +82,7 @@ public class TransactionService {
 			final TransactionDao<?> transactionDao = repositoryContext.getDatabaseInstance();
 			persistEntity(request, transactionDao);
 		} catch (final Exception e) {
-			// TODO: LOG ERRORS
+			LOGGER.error(e.getMessage(), e);
 			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_SAVED.getCode());
 			result.setMessage("There was an error when trying to save transaction");
 		}
@@ -94,11 +98,11 @@ public class TransactionService {
 			request.setId(id);
 			persistEntity(request, transactionDao);
 		} catch (final NoSuchElementException nse) {
-			// TODO: LOG ERRORS
+			LOGGER.error(nse.getMessage(), nse);
 			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND.getCode());
 			result.setMessage(String.format("Transaction with id %s does not exist", id));
 		} catch (final Exception e) {
-			// TODO: LOG ERRORS
+			LOGGER.error(e.getMessage(), e);
 			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_UPDATED.getCode());
 			result.setMessage("There was an error when trying to update transaction");
 		}
@@ -113,11 +117,11 @@ public class TransactionService {
 			transactionDao.exists(id);
 			transactionDao.delete(id);
 		} catch (final NoSuchElementException nse) {
-			// TODO: LOG ERRORS
+			LOGGER.error(nse.getMessage(), nse);
 			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND.getCode());
 			result.setMessage(String.format("Transaction with id %s does not exist", id));
 		} catch (final Exception e) {
-			// TODO: LOG ERRORS
+			LOGGER.error(e.getMessage(), e);
 			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_DELETED.getCode());
 			result.setMessage("There was an error when trying to delete transaction");
 		}
