@@ -1,4 +1,4 @@
-package com.administradortransacciones.avt;
+package com.administradortransacciones.avt.integration;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class AdministradorTransaccionesApplicationTests {
+public class BaseSpringIntegrationTest {
 
 	@Test
 	public void contextLoads() {

@@ -32,4 +32,8 @@ public class RepositoryContext {
 		return transactionDao;
 	}
 
+	public void setTransactionDao(TransactionDao<?> transactionDao) {
+		this.transactionDao = transactionDao;
+	}
+
 }

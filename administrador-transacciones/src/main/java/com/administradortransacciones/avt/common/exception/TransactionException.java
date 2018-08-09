@@ -13,7 +13,7 @@ public class TransactionException extends RuntimeException {
 	}
 
 	public TransactionException(final ErrorCodesEnum errorCode) {
-		super();
+		super(errorCode.getCode());
 		this.errorCode = errorCode;
 	}
 
