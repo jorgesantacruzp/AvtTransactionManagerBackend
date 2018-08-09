@@ -47,7 +47,7 @@ public class TransactionController {
 	public ResponseEntity<ApiBase> saveTransaction(@RequestBody final TransactionDto request) {
 		final ApiBase response = transactionService.saveTransaction(request);
 		if (StringUtils.isEmpty(response.getMessage())) {
-			return new ResponseEntity<ApiBase>(HttpStatus.CREATED);
+			return new ResponseEntity<>(HttpStatus.CREATED);
 		}
 		return new ResponseEntity<ApiBase>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -58,13 +58,17 @@ public class TransactionController {
 					@RequestBody final TransactionDto request) {
 		final ApiBase response = transactionService.updateTransaction(id, request);
 		if (StringUtils.isEmpty(response.getMessage())) {
-			return new ResponseEntity<ApiBase>(HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		return new ResponseEntity<ApiBase>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@DeleteMapping("/v1/transactions")
-	public ResponseEntity<String> deleteTransaction(@RequestParam(value = "peso", defaultValue = "0") final int peso) {
-		return new ResponseEntity<String>("delete " + peso, HttpStatus.NO_CONTENT);
+	@DeleteMapping("/v1/transactions/{id}")
+	public ResponseEntity<ApiBase> deleteTransaction(@PathVariable final String id) {
+		final ApiBase response = transactionService.deleteTransaction(id);
+		if (StringUtils.isEmpty(response.getMessage())) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<ApiBase>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

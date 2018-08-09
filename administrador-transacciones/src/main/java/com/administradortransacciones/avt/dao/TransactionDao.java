@@ -12,9 +12,9 @@ public interface TransactionDao<T> {
 
 	List<T> findByType(String type);
 
-	T findById(String id);
+	boolean exists(String id);
 
-	void delete();
+	void delete(String id);
 
 	int count();
 }

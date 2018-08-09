@@ -48,8 +48,8 @@ public class MongoDbRepository implements TransactionDao<TransactionMongo> {
 	}
 
 	@Override
-	public void delete() {
-
+	public void delete(final String id) {
+		mongoTransactionRepository.deleteById(id);
 	}
 
 	@Override
@@ -57,9 +57,12 @@ public class MongoDbRepository implements TransactionDao<TransactionMongo> {
 		return Long.valueOf(mongoTransactionRepository.count()).intValue();
 	}
 
+	/**
+	 * if transaction does not exist NoSuchElementException is thrown
+	 */
 	@Override
-	public TransactionMongo findById(final String id) {
-		return mongoTransactionRepository.findById(id).get();
+	public boolean exists(final String id) {
+		return mongoTransactionRepository.findById(id).get() != null;
 	}
 
 }

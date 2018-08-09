@@ -75,8 +75,8 @@ public class TransactionService {
 	public ApiBase saveTransaction(final TransactionDto request) {
 		final ApiBase result = new ApiBase();
 		try {
-			final TransactionDao<?> dbInstance = repositoryContext.getDatabaseInstance();
-			persistEntity(request, dbInstance);
+			final TransactionDao<?> transactionDao = repositoryContext.getDatabaseInstance();
+			persistEntity(request, transactionDao);
 		} catch (final Exception e) {
 			// TODO: LOG ERRORS
 			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_SAVED.getCode());
@@ -85,18 +85,14 @@ public class TransactionService {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	public ApiBase updateTransaction(final String id, final TransactionDto request) {
 		final ApiBase result = new ApiBase();
 		try {
-			final TransactionDao<?> dbInstance = repositoryContext.getDatabaseInstance();
-			if (RepositoryUtil.isMySql()) {
-				((TransactionDao<TransactionMySql>) dbInstance).findById(id);
-			} else if (RepositoryUtil.isMongoDb()) {
-				((TransactionDao<TransactionMongo>) dbInstance).findById(id);
-			}
+			final TransactionDao<?> transactionDao = repositoryContext.getDatabaseInstance();
+			// NoSuchElementException is thrown if transaction does not exist
+			transactionDao.exists(id);
 			request.setId(id);
-			persistEntity(request, dbInstance);
+			persistEntity(request, transactionDao);
 		} catch (final NoSuchElementException nse) {
 			// TODO: LOG ERRORS
 			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND.getCode());
@@ -109,14 +105,33 @@ public class TransactionService {
 		return result;
 	}
 
+	public ApiBase deleteTransaction(final String id) {
+		final ApiBase result = new ApiBase();
+		try {
+			final TransactionDao<?> transactionDao = repositoryContext.getDatabaseInstance();
+			// NoSuchElementException is thrown if transaction does not exist
+			transactionDao.exists(id);
+			transactionDao.delete(id);
+		} catch (final NoSuchElementException nse) {
+			// TODO: LOG ERRORS
+			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND.getCode());
+			result.setMessage(String.format("Transaction with id %s does not exist", id));
+		} catch (final Exception e) {
+			// TODO: LOG ERRORS
+			result.setErrorType(ErrorCodesEnum.ATXN_TRANSACTION_NOT_DELETED.getCode());
+			result.setMessage("There was an error when trying to delete transaction");
+		}
+		return result;
+	}
+
 	@SuppressWarnings("unchecked")
-	private void persistEntity(final TransactionDto request, final TransactionDao<?> dbInstance) {
+	private void persistEntity(final TransactionDto request, final TransactionDao<?> transactionDao) {
 		if (RepositoryUtil.isMySql()) {
 			final TransactionMySql mySqlEntity = TransactionMapperMySql.INSTANCE.transactionDtoToTransactionMysql(request);
-			((TransactionDao<TransactionMySql>) dbInstance).persist(mySqlEntity);
+			((TransactionDao<TransactionMySql>) transactionDao).persist(mySqlEntity);
 		} else if (RepositoryUtil.isMongoDb()) {
 			final TransactionMongo mongoEntity = TransactionMapperMongo.INSTANCE.transactionDtoToTransactionMongo(request);
-			((TransactionDao<TransactionMongo>) dbInstance).persist(mongoEntity);
+			((TransactionDao<TransactionMongo>) transactionDao).persist(mongoEntity);
 		}
 	}
 }

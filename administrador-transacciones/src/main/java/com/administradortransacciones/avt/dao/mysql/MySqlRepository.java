@@ -51,8 +51,8 @@ public class MySqlRepository implements TransactionDao<TransactionMySql> {
 	}
 
 	@Override
-	public void delete() {
-
+	public void delete(final String id) {
+		mysqlTransactionRepository.deleteById(Long.valueOf(id));
 	}
 
 	@Override
@@ -60,9 +60,12 @@ public class MySqlRepository implements TransactionDao<TransactionMySql> {
 		return Long.valueOf(mysqlTransactionRepository.count()).intValue();
 	}
 
+	/**
+	 * if transaction does not exist NoSuchElementException is thrown
+	 */
 	@Override
-	public TransactionMySql findById(final String id) {
-		return mysqlTransactionRepository.findById(Long.valueOf(id)).get();
+	public boolean exists(final String id) {
+		return mysqlTransactionRepository.findById(Long.valueOf(id)).get() != null;
 	}
 
 }
