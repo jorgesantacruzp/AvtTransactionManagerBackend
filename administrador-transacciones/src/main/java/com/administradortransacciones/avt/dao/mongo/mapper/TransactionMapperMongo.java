@@ -20,11 +20,11 @@ public interface TransactionMapperMongo {
 		@Mapping(source = "type", target = "type", qualifiedBy = TransactionTypeToStringMongo.class), 
 		@Mapping(source = "createdDate", target = "createdDate", dateFormat = "dd/MM/yyyy") 
 	})
-	TransactionDto transactionToTransactionDto(TransactionMongo transaction);
+	TransactionDto entityToDto(TransactionMongo transaction);
 	
 	@Mappings({ 
 		@Mapping(source = "type", target = "type.name"),
 		@Mapping(source = "createdDate", target = "createdDate", qualifiedBy = CurrentDate.class)
 	})
-	TransactionMongo transactionDtoToTransactionMongo(TransactionDto transaction);
+	TransactionMongo dtoToEntity(TransactionDto transaction);
 }

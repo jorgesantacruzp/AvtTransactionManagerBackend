@@ -10,7 +10,7 @@ import com.administradortransacciones.avt.dao.TransactionDao;
 import com.administradortransacciones.avt.dao.mongo.model.TransactionMongo;
 
 @Repository
-public class MongoDbRepository implements TransactionDao<TransactionMongo> {
+public class MongoDbTransactionDaoImpl implements TransactionDao<TransactionMongo> {
 
 	@Autowired
 	private MongoDbTransactionRepository mongoTransactionRepository;

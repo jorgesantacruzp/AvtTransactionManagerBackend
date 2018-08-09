@@ -21,11 +21,11 @@ public interface TransactionMapperMySql {
 		@Mapping(source = "type", target = "type", qualifiedBy = TransactionTypeToStringMySql.class),
 		@Mapping(source = "createdDate", target = "createdDate", dateFormat = "dd/MM/yyyy")
 	})
-	TransactionDto transactionToTransactionDto(TransactionMySql transaction);
+	TransactionDto entityToDto(TransactionMySql transaction);
 	
 	@Mappings({ 
 		@Mapping(source = "type", target = "type.id", qualifiedBy = StringToTransactionTypeMySql.class),
 		@Mapping(source = "createdDate", target = "createdDate", qualifiedBy = CurrentDate.class)
 	})
-	TransactionMySql transactionDtoToTransactionMysql(TransactionDto transaction);
+	TransactionMySql dtoToEntity(TransactionDto transaction);
 }

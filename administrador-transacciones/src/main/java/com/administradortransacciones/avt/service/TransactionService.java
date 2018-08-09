@@ -63,9 +63,13 @@ public class TransactionService {
 
 		final List<TransactionDto> list = new ArrayList<>();
 		if (transactions.get(0) instanceof TransactionMySql) {
-			transactions.stream().forEach(t -> list.add(TransactionMapperMySql.INSTANCE.transactionToTransactionDto((TransactionMySql) t)));
+			transactions.stream().forEach(t -> {
+				list.add(TransactionMapperMySql.INSTANCE.entityToDto((TransactionMySql) t));
+			});
 		} else if (transactions.get(0) instanceof TransactionMongo) {
-			transactions.stream().forEach(t -> list.add(TransactionMapperMongo.INSTANCE.transactionToTransactionDto((TransactionMongo) t)));
+			transactions.stream().forEach(t -> {
+				list.add(TransactionMapperMongo.INSTANCE.entityToDto((TransactionMongo) t));
+			});
 		}
 		return list;
 	}
@@ -114,10 +118,10 @@ public class TransactionService {
 	@SuppressWarnings("unchecked")
 	private void persistEntity(final TransactionDto request, final TransactionDao<?> transactionDao) {
 		if (RepositoryUtil.isMySql()) {
-			final TransactionMySql mySqlEntity = TransactionMapperMySql.INSTANCE.transactionDtoToTransactionMysql(request);
+			final TransactionMySql mySqlEntity = TransactionMapperMySql.INSTANCE.dtoToEntity(request);
 			((TransactionDao<TransactionMySql>) transactionDao).persist(mySqlEntity);
 		} else if (RepositoryUtil.isMongoDb()) {
-			final TransactionMongo mongoEntity = TransactionMapperMongo.INSTANCE.transactionDtoToTransactionMongo(request);
+			final TransactionMongo mongoEntity = TransactionMapperMongo.INSTANCE.dtoToEntity(request);
 			((TransactionDao<TransactionMongo>) transactionDao).persist(mongoEntity);
 		}
 	}

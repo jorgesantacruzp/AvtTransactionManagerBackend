@@ -13,7 +13,7 @@ import com.administradortransacciones.avt.dao.mysql.model.TransactionMySql;
 import com.administradortransacciones.avt.dao.mysql.model.TransactionTypeMySql;
 
 @Repository
-public class MySqlRepository implements TransactionDao<TransactionMySql> {
+public class MySqlTransactionDaoImpl implements TransactionDao<TransactionMySql> {
 
 	@Autowired
 	private MySqlTransactionRepository mysqlTransactionRepository;

@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 
 import com.administradortransacciones.avt.common.RepositoryEnum;
 import com.administradortransacciones.avt.common.util.RepositoryUtil;
-import com.administradortransacciones.avt.dao.mongo.MongoDbRepository;
-import com.administradortransacciones.avt.dao.mysql.MySqlRepository;
+import com.administradortransacciones.avt.dao.mongo.MongoDbTransactionDaoImpl;
+import com.administradortransacciones.avt.dao.mysql.MySqlTransactionDaoImpl;
 
 @Service
 public class RepositoryContext {
@@ -14,10 +14,10 @@ public class RepositoryContext {
 	private TransactionDao<?> transactionDao;
 
 	@Autowired
-	private MySqlRepository mySqlRepository;
+	private MySqlTransactionDaoImpl mySqlRepository;
 
 	@Autowired
-	private MongoDbRepository mongoDbRepository;
+	private MongoDbTransactionDaoImpl mongoDbRepository;
 
 	public TransactionDao<?> getDatabaseInstance() {
 		return getDatabaseInstance(RepositoryUtil.getChosenRepository());
@@ -30,10 +30,6 @@ public class RepositoryContext {
 			transactionDao = mongoDbRepository;
 		}
 		return transactionDao;
-	}
-
-	public void setTransactionDao(TransactionDao<?> transactionDao) {
-		this.transactionDao = transactionDao;
 	}
 
 }
