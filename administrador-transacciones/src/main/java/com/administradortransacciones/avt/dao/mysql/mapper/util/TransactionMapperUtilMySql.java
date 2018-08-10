@@ -2,10 +2,13 @@ package com.administradortransacciones.avt.dao.mysql.mapper.util;
 
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
 import com.administradortransacciones.avt.common.TransactionTypeEnum;
 import com.administradortransacciones.avt.common.mapper.util.CurrentDate;
 import com.administradortransacciones.avt.dao.mysql.model.TransactionTypeMySql;
 
+@Component
 public class TransactionMapperUtilMySql {
 
 	@TransactionTypeToStringMySql

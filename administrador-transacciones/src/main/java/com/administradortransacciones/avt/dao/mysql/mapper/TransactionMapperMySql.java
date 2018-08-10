@@ -3,7 +3,6 @@ package com.administradortransacciones.avt.dao.mysql.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
 
 import com.administradortransacciones.avt.common.dto.TransactionDto;
 import com.administradortransacciones.avt.common.mapper.util.CurrentDate;
@@ -12,10 +11,8 @@ import com.administradortransacciones.avt.dao.mysql.mapper.util.TransactionMappe
 import com.administradortransacciones.avt.dao.mysql.mapper.util.TransactionTypeToStringMySql;
 import com.administradortransacciones.avt.dao.mysql.model.TransactionMySql;
 
-@Mapper(uses = TransactionMapperUtilMySql.class)
+@Mapper(componentModel = "spring", uses = TransactionMapperUtilMySql.class)
 public interface TransactionMapperMySql {
-
-	TransactionMapperMySql INSTANCE = Mappers.getMapper(TransactionMapperMySql.class);
 
 	@Mappings({ 
 		@Mapping(source = "type", target = "type", qualifiedBy = TransactionTypeToStringMySql.class),

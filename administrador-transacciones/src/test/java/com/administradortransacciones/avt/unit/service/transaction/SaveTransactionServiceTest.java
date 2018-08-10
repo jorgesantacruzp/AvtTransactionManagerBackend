@@ -3,8 +3,6 @@ package com.administradortransacciones.avt.unit.service.transaction;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
-import java.util.NoSuchElementException;
-
 import org.junit.Test;
 
 import com.administradortransacciones.avt.common.ErrorCodesEnum;
@@ -33,7 +31,7 @@ public class SaveTransactionServiceTest extends BaseTransactionServiceUnitTest {
 		thrown.expect(TransactionException.class);
 		thrown.expectMessage(ErrorCodesEnum.ATXN_TRANSACTION_NOT_SAVED.getCode());
 
-		doThrow(new NoSuchElementException()).when(transactionDao).persist(any());
+		doThrow(new TransactionException()).when(transactionDao).persist(any());
 		transactionService.saveTransaction(new TransactionDto());
 	}
 

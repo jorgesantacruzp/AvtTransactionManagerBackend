@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.administradortransacciones.avt.dao.RepositoryContext;
 import com.administradortransacciones.avt.dao.TransactionDao;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 @SpringBootTest
 @SuppressWarnings("rawtypes")
 public abstract class BaseSpringUnitTest {

@@ -27,8 +27,24 @@ public class TransactionService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TransactionService.class);
 
-	@Autowired
+	private TransactionMapperMongo transactionMapperMongo;
+	private TransactionMapperMySql transactionMapperMySql;
 	private RepositoryContext repositoryContext;
+
+	@Autowired
+	public void setTransactionMapperMongo(TransactionMapperMongo transactionMapperMongo) {
+		this.transactionMapperMongo = transactionMapperMongo;
+	}
+
+	@Autowired
+	public void setTransactionMapperMySql(TransactionMapperMySql transactionMapperMySql) {
+		this.transactionMapperMySql = transactionMapperMySql;
+	}
+
+	@Autowired
+	public void setRepositoryContext(RepositoryContext repositoryContext) {
+		this.repositoryContext = repositoryContext;
+	}
 
 	public List<TransactionDto> getTransactions(final int type) {
 		try {
@@ -70,11 +86,11 @@ public class TransactionService {
 		final List<TransactionDto> list = new ArrayList<>();
 		if (transactions.get(0) instanceof TransactionMySql) {
 			transactions.stream().forEach(t -> {
-				list.add(TransactionMapperMySql.INSTANCE.entityToDto((TransactionMySql) t));
+				list.add(transactionMapperMySql.entityToDto((TransactionMySql) t));
 			});
 		} else if (transactions.get(0) instanceof TransactionMongo) {
 			transactions.stream().forEach(t -> {
-				list.add(TransactionMapperMongo.INSTANCE.entityToDto((TransactionMongo) t));
+				list.add(transactionMapperMongo.entityToDto((TransactionMongo) t));
 			});
 		}
 		return list;
@@ -124,10 +140,10 @@ public class TransactionService {
 	@SuppressWarnings("unchecked")
 	private void persistEntity(final TransactionDto request, final TransactionDao<?> transactionDao) {
 		if (RepositoryUtil.isMySql()) {
-			final TransactionMySql mySqlEntity = TransactionMapperMySql.INSTANCE.dtoToEntity(request);
+			final TransactionMySql mySqlEntity = transactionMapperMySql.dtoToEntity(request);
 			((TransactionDao<TransactionMySql>) transactionDao).persist(mySqlEntity);
 		} else if (RepositoryUtil.isMongoDb()) {
-			final TransactionMongo mongoEntity = TransactionMapperMongo.INSTANCE.dtoToEntity(request);
+			final TransactionMongo mongoEntity = transactionMapperMongo.dtoToEntity(request);
 			((TransactionDao<TransactionMongo>) transactionDao).persist(mongoEntity);
 		}
 	}

@@ -15,8 +15,12 @@ import com.administradortransacciones.avt.dao.mysql.model.TransactionTypeMySql;
 @Repository
 public class MySqlTransactionDaoImpl implements TransactionDao<TransactionMySql> {
 
-	@Autowired
 	private MySqlTransactionRepository mysqlTransactionRepository;
+
+	@Autowired
+	public void setMysqlTransactionRepository(MySqlTransactionRepository mysqlTransactionRepository) {
+		this.mysqlTransactionRepository = mysqlTransactionRepository;
+	}
 
 	@Override
 	public TransactionMySql persist(final TransactionMySql transaction) {
@@ -69,7 +73,7 @@ public class MySqlTransactionDaoImpl implements TransactionDao<TransactionMySql>
 	}
 
 	@Override
-	public List<TransactionMySql> findByWeightAndType(int weight, String type) {
+	public List<TransactionMySql> findByWeightAndType(final int weight, final String type) {
 		final List<TransactionMySql> results = mysqlTransactionRepository.findByWeightAndType(weight,
 						new TransactionTypeMySql(type));
 		if (results == null) {

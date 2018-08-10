@@ -12,8 +12,12 @@ import com.administradortransacciones.avt.dao.mongo.model.TransactionMongo;
 @Repository
 public class MongoDbTransactionDaoImpl implements TransactionDao<TransactionMongo> {
 
-	@Autowired
 	private MongoDbTransactionRepository mongoTransactionRepository;
+
+	@Autowired
+	public void setMongoTransactionRepository(MongoDbTransactionRepository mongoTransactionRepository) {
+		this.mongoTransactionRepository = mongoTransactionRepository;
+	}
 
 	@Override
 	public TransactionMongo persist(final TransactionMongo transaction) {
