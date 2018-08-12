@@ -35,12 +35,20 @@ public abstract class TransactionTypeDataStructure {
 		}
 	}
 
-	public TransactionDto find(final int weight) {
+	public List<TransactionDto> find(final int weight) {
+		List<TransactionDto> list = new ArrayList<>();
 		if (isBinaryTree) {
-			return binaryTree.search(weight);
+			TransactionDto transactionDto = binaryTree.search(weight);
+			if (transactionDto != null) {
+				list.add(transactionDto);
+			}
 		} else {
-			return queue.search(weight);
+			TransactionDto transactionDto = queue.search(weight);
+			if (transactionDto != null) {
+				list.add(transactionDto);
+			}
 		}
+		return list;
 	}
 
 	public void delete(final int weight) {

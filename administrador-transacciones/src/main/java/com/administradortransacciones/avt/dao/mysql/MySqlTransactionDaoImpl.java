@@ -68,8 +68,8 @@ public class MySqlTransactionDaoImpl implements TransactionDao<TransactionMySql>
 	 * if transaction does not exist NoSuchElementException is thrown
 	 */
 	@Override
-	public boolean exists(final String id) {
-		return mysqlTransactionRepository.findById(Long.valueOf(id)).get() != null;
+	public TransactionMySql findById(final String id) {
+		return mysqlTransactionRepository.findById(Long.valueOf(id)).get();
 	}
 
 	@Override

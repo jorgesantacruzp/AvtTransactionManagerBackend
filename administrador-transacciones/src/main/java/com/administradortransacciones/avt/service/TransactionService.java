@@ -30,6 +30,7 @@ public class TransactionService {
 	private TransactionMapperMongo transactionMapperMongo;
 	private TransactionMapperMySql transactionMapperMySql;
 	private RepositoryContext repositoryContext;
+	private DataStructureService dataStructureService;
 
 	@Autowired
 	public void setTransactionMapperMongo(TransactionMapperMongo transactionMapperMongo) {
@@ -46,16 +47,36 @@ public class TransactionService {
 		this.repositoryContext = repositoryContext;
 	}
 
+	@Autowired
+	public void setDataStructureService(DataStructureService dataStructureService) {
+		this.dataStructureService = dataStructureService;
+	}
+
 	public List<TransactionDto> getTransactions(final int type) {
 		try {
 			List<?> transactions = Collections.emptyList();
 			final TransactionTypeEnum typeEnum = TransactionTypeEnum.findById(type);
+
+			// search in memory if there are transactions
+			List<TransactionDto> transactionsDto = dataStructureService.getAllTransactions(typeEnum);
+			if (!transactionsDto.isEmpty()) {
+				LOGGER.info("Transactions fetched from data structure");
+				return transactionsDto;
+			}
+
+			// if not in memory search in database
 			if (TransactionTypeEnum.ALL.equals(typeEnum)) {
 				transactions = repositoryContext.getDatabaseInstance().findAll();
 			} else {
 				transactions = repositoryContext.getDatabaseInstance().findByType(typeEnum.name());
 			}
-			return buildTransacionDtoList(transactions);
+			transactionsDto = buildTransacionDtoList(transactions);
+
+			// save all transactions in memory
+			if (TransactionTypeEnum.ALL.equals(typeEnum)) {
+				dataStructureService.addTransactions(transactionsDto);
+			}
+			return transactionsDto;
 		} catch (final Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			throw new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED);
@@ -66,6 +87,15 @@ public class TransactionService {
 		try {
 			List<?> transactions = Collections.emptyList();
 			final TransactionTypeEnum typeEnum = TransactionTypeEnum.findById(type);
+
+			// search in memory if the transaction exists
+			final List<TransactionDto> transactionsDto = dataStructureService.findTransaction(weight, typeEnum);
+			if (!transactionsDto.isEmpty()) {
+				LOGGER.info("Transactions fetched from data structure");
+				return transactionsDto;
+			}
+
+			// if not in memory search in database
 			if (TransactionTypeEnum.ALL.equals(typeEnum)) {
 				transactions = repositoryContext.getDatabaseInstance().findByWeight(weight);
 			} else {
@@ -99,7 +129,10 @@ public class TransactionService {
 	public void saveTransaction(final TransactionDto request) {
 		try {
 			final TransactionDao<?> transactionDao = repositoryContext.getDatabaseInstance();
-			persistEntity(request, transactionDao);
+			final TransactionDto transactionDto = persistEntity(request, transactionDao);
+
+			// save transaction in memory
+			dataStructureService.addTransaction(transactionDto);
 		} catch (final Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			throw new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_SAVED);
@@ -110,7 +143,7 @@ public class TransactionService {
 		try {
 			final TransactionDao<?> transactionDao = repositoryContext.getDatabaseInstance();
 			// NoSuchElementException is thrown if transaction does not exist
-			transactionDao.exists(id);
+			transactionDao.findById(id);
 			request.setId(id);
 			persistEntity(request, transactionDao);
 		} catch (final NoSuchElementException nse) {
@@ -126,8 +159,18 @@ public class TransactionService {
 		try {
 			final TransactionDao<?> transactionDao = repositoryContext.getDatabaseInstance();
 			// NoSuchElementException is thrown if transaction does not exist
-			transactionDao.exists(id);
+			Object transactionEntity = transactionDao.findById(id);
 			transactionDao.delete(id);
+
+			TransactionDto transactionDto = new TransactionDto();
+			if (transactionEntity instanceof TransactionMySql) {
+				transactionDto = transactionMapperMySql.entityToDto((TransactionMySql) transactionEntity);
+			} else if (transactionEntity instanceof TransactionMongo) {
+				transactionDto = transactionMapperMongo.entityToDto((TransactionMongo) transactionEntity);
+			}
+
+			// delete transaction in memory
+			dataStructureService.deleteTransaction(transactionDto);
 		} catch (final NoSuchElementException nse) {
 			LOGGER.error(nse.getMessage(), nse);
 			throw new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND);
@@ -138,13 +181,16 @@ public class TransactionService {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void persistEntity(final TransactionDto request, final TransactionDao<?> transactionDao) {
+	private TransactionDto persistEntity(final TransactionDto request, final TransactionDao<?> transactionDao) {
 		if (RepositoryUtil.isMySql()) {
 			final TransactionMySql mySqlEntity = transactionMapperMySql.dtoToEntity(request);
-			((TransactionDao<TransactionMySql>) transactionDao).persist(mySqlEntity);
+			TransactionMySql savedEntity = ((TransactionDao<TransactionMySql>) transactionDao).persist(mySqlEntity);
+			return transactionMapperMySql.entityToDto(savedEntity);
 		} else if (RepositoryUtil.isMongoDb()) {
 			final TransactionMongo mongoEntity = transactionMapperMongo.dtoToEntity(request);
-			((TransactionDao<TransactionMongo>) transactionDao).persist(mongoEntity);
+			TransactionMongo savedEntity = ((TransactionDao<TransactionMongo>) transactionDao).persist(mongoEntity);
+			return transactionMapperMongo.entityToDto(savedEntity);
 		}
+		return null;
 	}
 }

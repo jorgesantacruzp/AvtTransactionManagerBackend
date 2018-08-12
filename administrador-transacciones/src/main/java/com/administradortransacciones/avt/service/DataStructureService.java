@@ -15,11 +15,11 @@ import com.administradortransacciones.avt.common.edt.type.PayrollPaymentTransact
 public class DataStructureService {
 
 	public void addTransaction(final TransactionDto transaction) {
-		if (TransactionTypeEnum.CHECK_CHANGE.name().equals(transaction.getName())) {
+		if (TransactionTypeEnum.CHECK_CHANGE.name().equals(transaction.getType())) {
 			CheckChangeTransaction.getInstance().addTransaction(transaction);
-		} else if (TransactionTypeEnum.MONEY_TRANSFER.name().equals(transaction.getName())) {
+		} else if (TransactionTypeEnum.MONEY_TRANSFER.name().equals(transaction.getType())) {
 			MoneyTransferTransaction.getInstance().addTransaction(transaction);
-		} else if (TransactionTypeEnum.PAYROLL_PAYMENT.name().equals(transaction.getName())) {
+		} else if (TransactionTypeEnum.PAYROLL_PAYMENT.name().equals(transaction.getType())) {
 			PayrollPaymentTransaction.getInstance().addTransaction(transaction);
 		}
 	}
@@ -31,20 +31,28 @@ public class DataStructureService {
 	}
 
 	public void deleteTransaction(final TransactionDto transaction) {
-		if (TransactionTypeEnum.CHECK_CHANGE.name().equals(transaction.getName())) {
+		if (TransactionTypeEnum.CHECK_CHANGE.name().equals(transaction.getType())) {
 			CheckChangeTransaction.getInstance().delete(transaction.getWeight());
-		} else if (TransactionTypeEnum.MONEY_TRANSFER.name().equals(transaction.getName())) {
+		} else if (TransactionTypeEnum.MONEY_TRANSFER.name().equals(transaction.getType())) {
 			MoneyTransferTransaction.getInstance().delete(transaction.getWeight());
-		} else if (TransactionTypeEnum.PAYROLL_PAYMENT.name().equals(transaction.getName())) {
+		} else if (TransactionTypeEnum.PAYROLL_PAYMENT.name().equals(transaction.getType())) {
 			PayrollPaymentTransaction.getInstance().delete(transaction.getWeight());
 		}
 	}
 
-	public List<TransactionDto> getAllTransactions() {
+	public List<TransactionDto> getAllTransactions(final TransactionTypeEnum typeEnum) {
 		List<TransactionDto> list = new ArrayList<>();
-		list.addAll(CheckChangeTransaction.getInstance().list());
-		list.addAll(MoneyTransferTransaction.getInstance().list());
-		list.addAll(PayrollPaymentTransaction.getInstance().list());
+		if (TransactionTypeEnum.CHECK_CHANGE.equals(typeEnum)) {
+			list.addAll(CheckChangeTransaction.getInstance().list());
+		} else if (TransactionTypeEnum.MONEY_TRANSFER.equals(typeEnum)) {
+			list.addAll(MoneyTransferTransaction.getInstance().list());
+		} else if (TransactionTypeEnum.PAYROLL_PAYMENT.equals(typeEnum)) {
+			list.addAll(PayrollPaymentTransaction.getInstance().list());
+		} else {
+			list.addAll(CheckChangeTransaction.getInstance().list());
+			list.addAll(MoneyTransferTransaction.getInstance().list());
+			list.addAll(PayrollPaymentTransaction.getInstance().list());
+		}
 		return list;
 	}
 
@@ -54,20 +62,18 @@ public class DataStructureService {
 		PayrollPaymentTransaction.getInstance().cleanDataStructure();
 	}
 
-	public List<TransactionDto> findTransaction(final int weight, final int type) {
+	public List<TransactionDto> findTransaction(final int weight, final TransactionTypeEnum typeEnum) {
 		List<TransactionDto> list = new ArrayList<>();
-		if (TransactionTypeEnum.ALL.getId() == type) {
-			list.add(CheckChangeTransaction.getInstance().find(weight));
-			list.add(MoneyTransferTransaction.getInstance().find(weight));
-			list.add(PayrollPaymentTransaction.getInstance().find(weight));
-			return list;
-		}
-		if (TransactionTypeEnum.CHECK_CHANGE.equals(TransactionTypeEnum.findById(type))) {
-			list.add(CheckChangeTransaction.getInstance().find(weight));
-		} else if (TransactionTypeEnum.MONEY_TRANSFER.equals(TransactionTypeEnum.findById(type))) {
-			list.add(MoneyTransferTransaction.getInstance().find(weight));
-		} else if (TransactionTypeEnum.PAYROLL_PAYMENT.equals(TransactionTypeEnum.findById(type))) {
-			list.add(PayrollPaymentTransaction.getInstance().find(weight));
+		if (TransactionTypeEnum.CHECK_CHANGE.equals(typeEnum)) {
+			list.addAll(CheckChangeTransaction.getInstance().find(weight));
+		} else if (TransactionTypeEnum.MONEY_TRANSFER.equals(typeEnum)) {
+			list.addAll(MoneyTransferTransaction.getInstance().find(weight));
+		} else if (TransactionTypeEnum.PAYROLL_PAYMENT.equals(typeEnum)) {
+			list.addAll(PayrollPaymentTransaction.getInstance().find(weight));
+		} else {
+			list.addAll(CheckChangeTransaction.getInstance().find(weight));
+			list.addAll(MoneyTransferTransaction.getInstance().find(weight));
+			list.addAll(PayrollPaymentTransaction.getInstance().find(weight));
 		}
 		return list;
 	}

@@ -65,8 +65,8 @@ public class MongoDbTransactionDaoImpl implements TransactionDao<TransactionMong
 	 * if transaction does not exist NoSuchElementException is thrown
 	 */
 	@Override
-	public boolean exists(final String id) {
-		return mongoTransactionRepository.findById(id).get() != null;
+	public TransactionMongo findById(final String id) {
+		return mongoTransactionRepository.findById(id).get();
 	}
 
 	@Override

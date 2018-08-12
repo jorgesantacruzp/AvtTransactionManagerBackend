@@ -31,7 +31,7 @@ public class UpdateTransactionServiceTest extends BaseTransactionServiceUnitTest
 		thrown.expect(TransactionException.class);
 		thrown.expectMessage(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND.getCode());
 
-		doThrow(new NoSuchElementException()).when(transactionDao).exists("1");
+		doThrow(new NoSuchElementException()).when(transactionDao).findById("1");
 		transactionService.updateTransaction("1", new TransactionDto());
 	}
 
@@ -40,7 +40,7 @@ public class UpdateTransactionServiceTest extends BaseTransactionServiceUnitTest
 		thrown.expect(TransactionException.class);
 		thrown.expectMessage(ErrorCodesEnum.ATXN_TRANSACTION_NOT_UPDATED.getCode());
 
-		doThrow(new TransactionException()).when(transactionDao).exists("1");
+		doThrow(new TransactionException()).when(transactionDao).findById("1");
 		transactionService.updateTransaction("1", new TransactionDto());
 	}
 

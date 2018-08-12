@@ -14,7 +14,7 @@ public class DeleteTransactionServiceTest extends BaseTransactionServiceUnitTest
 
 	@Test
 	public void shouldDeleteTransaction() {
-		when(transactionDao.exists("1")).thenReturn(true);
+		when(transactionDao.findById("1")).thenReturn(true);
 		transactionService.deleteTransaction("1");
 	}
 
@@ -23,7 +23,7 @@ public class DeleteTransactionServiceTest extends BaseTransactionServiceUnitTest
 		thrown.expect(TransactionException.class);
 		thrown.expectMessage(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND.getCode());
 
-		doThrow(new NoSuchElementException()).when(transactionDao).exists("1");
+		doThrow(new NoSuchElementException()).when(transactionDao).findById("1");
 		transactionService.deleteTransaction("1");
 	}
 
