@@ -13,7 +13,7 @@ public abstract class TransactionTypeDataStructure {
 	protected TransactionQueue queue;
 	protected TransactionBinaryTree binaryTree;
 
-	protected boolean isBinaryTree;
+	protected boolean isBinaryTree = true;
 
 	abstract void enqueueAll(final List<TransactionDto> transactions);
 
