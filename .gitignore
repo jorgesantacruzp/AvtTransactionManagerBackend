@@ -30,5 +30,5 @@
 .recommenders
 
 ### Project ###
-administrador-transacciones/logs/
-administrador-transacciones/target/
+transaction-manager/logs/
+transaction-manager/target/
