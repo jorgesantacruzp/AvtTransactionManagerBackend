@@ -23,48 +23,36 @@ public class UpdateTransactionControllerIntegrationTest extends BaseTransactionC
 	public void shouldUpdateTransactionFromMySql() {
 		RepositoryUtil.setChosenRepository(RepositoryEnum.MYSQL.name());
 		when(mySqlTransactionRepository.findById(3L)).thenReturn(Optional.of(new TransactionMySql()));
-		given()
-			.header("Content-Type", "application/json")
-			.body(TransactionTestUtil.getTransactionDtoSample())
-			.put("/transactions/3")
-			.then().statusCode(HttpStatus.OK.value());
+		when(mySqlTransactionRepository.save(new TransactionMySql())).thenReturn(new TransactionMySql());
+		given().header("Content-Type", "application/json").body(TransactionTestUtil.getTransactionDtoSample())
+						.put("/transactions/3").then().statusCode(HttpStatus.OK.value());
 	}
 
 	@Test
 	public void shouldUpdateTransactionFromMongoDb() {
 		RepositoryUtil.setChosenRepository(RepositoryEnum.MONGODB.name());
 		when(mongoTransactionRepository.findById("3")).thenReturn(Optional.of(new TransactionMongo()));
-		given()
-			.header("Content-Type", "application/json")
-			.body(TransactionTestUtil.getTransactionDtoSample())
-			.put("/transactions/3")
-			.then().statusCode(HttpStatus.OK.value());
+		when(mongoTransactionRepository.save(new TransactionMongo())).thenReturn(new TransactionMongo());
+		given().header("Content-Type", "application/json").body(TransactionTestUtil.getTransactionDtoSample())
+						.put("/transactions/3").then().statusCode(HttpStatus.OK.value());
 	}
 
 	@Test
 	public void shouldThrowNoSuchElementExceptionWhileUpdating() {
 		RepositoryUtil.setChosenRepository(RepositoryEnum.MONGODB.name());
 		when(mongoTransactionRepository.findById("1")).thenReturn(Optional.of(new TransactionMongo()));
-		given()
-			.header("Content-Type", "application/json")
-			.body(TransactionTestUtil.getTransactionDtoSample())
-			.put("/transactions/3")
-			.then().statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-			.assertThat()
-			.body("errorType", is(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND.getCode()));
+		given().header("Content-Type", "application/json").body(TransactionTestUtil.getTransactionDtoSample())
+						.put("/transactions/3").then().statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()).assertThat()
+						.body("errorType", is(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND.getCode()));
 	}
 
 	@Test
 	public void shouldThrowTransactionExceptionWhileUpdating() {
 		RepositoryUtil.setChosenRepository(RepositoryEnum.MYSQL.name());
 		when(mySqlTransactionRepository.findById(3L)).thenThrow(new TransactionException());
-		given()
-			.header("Content-Type", "application/json")
-			.body(TransactionTestUtil.getTransactionDtoSample())
-			.put("/transactions/3")
-			.then().statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-			.assertThat()
-			.body("errorType", is(ErrorCodesEnum.ATXN_TRANSACTION_NOT_UPDATED.getCode()));
+		given().header("Content-Type", "application/json").body(TransactionTestUtil.getTransactionDtoSample())
+						.put("/transactions/3").then().statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()).assertThat()
+						.body("errorType", is(ErrorCodesEnum.ATXN_TRANSACTION_NOT_UPDATED.getCode()));
 	}
 
 }

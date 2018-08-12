@@ -13,7 +13,7 @@ public class TransactionMapperUtilMySql {
 
 	@TransactionTypeToStringMySql
 	public String entityToString(final TransactionTypeMySql type) {
-		return type.getName();
+		return type == null ? null : type.getName();
 	}
 
 	@StringToTransactionTypeMySql

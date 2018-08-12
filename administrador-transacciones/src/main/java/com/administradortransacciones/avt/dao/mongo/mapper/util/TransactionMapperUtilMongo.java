@@ -12,7 +12,7 @@ public class TransactionMapperUtilMongo {
 
 	@TransactionTypeToStringMongo
 	public String entityToString(final TransactionTypeMongo type) {
-		return type.getName();
+		return type == null ? null : type.getName();
 	}
 
 	@CurrentDate

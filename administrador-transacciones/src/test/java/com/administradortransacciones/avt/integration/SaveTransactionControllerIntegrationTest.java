@@ -36,6 +36,7 @@ public class SaveTransactionControllerIntegrationTest extends BaseTransactionCon
 	public void shouldSaveTransactionFromMySql() {
 		RepositoryUtil.setChosenRepository(RepositoryEnum.MYSQL.name());
 		when(mySqlTransactionRepository.findById(3L)).thenReturn(Optional.of(new TransactionMySql()));
+		when(mySqlTransactionRepository.save(new TransactionMySql())).thenReturn(new TransactionMySql());
 		given()
 			.header("Content-Type", "application/json")
 			.body(TransactionTestUtil.getTransactionDtoSample())
@@ -47,6 +48,7 @@ public class SaveTransactionControllerIntegrationTest extends BaseTransactionCon
 	public void shouldSaveTransactionFromMongoDb() {
 		RepositoryUtil.setChosenRepository(RepositoryEnum.MONGODB.name());
 		when(mongoTransactionRepository.findById("3")).thenReturn(Optional.of(new TransactionMongo()));
+		when(mongoTransactionRepository.save(new TransactionMongo())).thenReturn(new TransactionMongo());
 		given()
 			.header("Content-Type", "application/json")
 			.body(TransactionTestUtil.getTransactionDtoSample())
