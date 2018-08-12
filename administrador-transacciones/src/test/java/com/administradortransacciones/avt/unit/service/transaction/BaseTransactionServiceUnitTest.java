@@ -13,6 +13,7 @@ import com.administradortransacciones.avt.dao.mongo.mapper.TransactionMapperMong
 import com.administradortransacciones.avt.dao.mongo.model.TransactionMongo;
 import com.administradortransacciones.avt.dao.mysql.mapper.TransactionMapperMySql;
 import com.administradortransacciones.avt.dao.mysql.model.TransactionMySql;
+import com.administradortransacciones.avt.service.DataStructureService;
 import com.administradortransacciones.avt.service.TransactionService;
 import com.administradortransacciones.avt.unit.BaseSpringUnitTest;
 
@@ -30,6 +31,9 @@ public abstract class BaseTransactionServiceUnitTest extends BaseSpringUnitTest 
 
 	@Mock
 	private TransactionMapperMySql transactionMapperMySql;
+	
+	@Mock
+	private DataStructureService dataStructureService;
 
 	@Before
 	public void before() {
@@ -38,6 +42,7 @@ public abstract class BaseTransactionServiceUnitTest extends BaseSpringUnitTest 
 		when(transactionMapperMongo.dtoToEntity(new TransactionDto())).thenReturn(new TransactionMongo());
 		when(transactionMapperMongo.entityToDto(new TransactionMongo())).thenReturn(new TransactionDto());
 		when(repositoryContext.getDatabaseInstance()).thenReturn(transactionDao);
+		transactionService.setDataStructureService(dataStructureService);
 	}
 
 }

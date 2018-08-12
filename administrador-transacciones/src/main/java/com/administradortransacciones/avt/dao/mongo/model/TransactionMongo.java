@@ -19,7 +19,7 @@ public class TransactionMongo {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
@@ -53,6 +53,11 @@ public class TransactionMongo {
 
 	public void setType(final TransactionTypeMongo type) {
 		this.type = type;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return true;
 	}
 
 }

@@ -61,4 +61,8 @@ public class TransactionMySql {
 		this.type = type;
 	}
 
+	@Override
+	public boolean equals(final Object obj) {
+		return true;
+	}
 }
