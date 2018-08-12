@@ -1,4 +1,5 @@
 /target/
+
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -23,12 +24,4 @@
 /dist/
 /nbdist/
 /.nb-gradle/
-
-### Eclipse ###
-/RemoteSystemsTempFiles/
-.metadata/
-.recommenders
-
-### Project ###
-transaction-manager/logs/
-transaction-manager/target/
+.gitignore

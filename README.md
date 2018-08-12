@@ -1,2 +1,2 @@
-# TrxnAvtBackend
-Backend para administrar transacciones de usuarios.
+# Avantica transactions manager backend
+Backend to manage user transactions
