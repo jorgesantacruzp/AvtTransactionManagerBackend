@@ -89,4 +89,12 @@ public abstract class TransactionTypeDataStructure {
 		this.isBinaryTree = DataStructureEnum.BINARY_TREE.name().equals(dataStructure);
 	}
 
+	public boolean isEmpty() {
+		if (isBinaryTree) {
+			return binaryTree.isEmpty();
+		} else {
+			return queue.isEmpty();
+		}
+	}
+
 }

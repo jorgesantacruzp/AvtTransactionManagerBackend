@@ -51,6 +51,12 @@ public class TransactionController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	@DeleteMapping("/v1/transactions")
+	public ResponseEntity<ApiBase> deleteTransactionsInMemory() {
+		transactionService.deleteTransactionsInMemory();
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+
 	@DeleteMapping("/v1/transactions/{id}")
 	public ResponseEntity<ApiBase> deleteTransaction(@PathVariable final String id) {
 		transactionService.deleteTransaction(id);

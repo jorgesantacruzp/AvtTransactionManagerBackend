@@ -21,6 +21,7 @@ public interface TransactionMapperMongo {
 	
 	@Mappings({ 
 		@Mapping(source = "type", target = "type.name"),
+		@Mapping(source = "dataStructure", target = "type.dataStructure"),
 		@Mapping(source = "createdDate", target = "createdDate", qualifiedBy = CurrentDate.class)
 	})
 	TransactionMongo dtoToEntity(TransactionDto transaction);

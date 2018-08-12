@@ -19,6 +19,7 @@ import com.administradortransacciones.avt.dao.RepositoryContext;
 import com.administradortransacciones.avt.dao.TransactionDao;
 import com.administradortransacciones.avt.dao.mongo.mapper.TransactionMapperMongo;
 import com.administradortransacciones.avt.dao.mongo.model.TransactionMongo;
+import com.administradortransacciones.avt.dao.mysql.MySqlTransactionTypeRepository;
 import com.administradortransacciones.avt.dao.mysql.mapper.TransactionMapperMySql;
 import com.administradortransacciones.avt.dao.mysql.model.TransactionMySql;
 
@@ -31,25 +32,31 @@ public class TransactionService {
 	private TransactionMapperMySql transactionMapperMySql;
 	private RepositoryContext repositoryContext;
 	private DataStructureService dataStructureService;
+	private MySqlTransactionTypeRepository mySqlTransactionTypeRepository;
 
 	@Autowired
-	public void setTransactionMapperMongo(TransactionMapperMongo transactionMapperMongo) {
+	public void setTransactionMapperMongo(final TransactionMapperMongo transactionMapperMongo) {
 		this.transactionMapperMongo = transactionMapperMongo;
 	}
 
 	@Autowired
-	public void setTransactionMapperMySql(TransactionMapperMySql transactionMapperMySql) {
+	public void setTransactionMapperMySql(final TransactionMapperMySql transactionMapperMySql) {
 		this.transactionMapperMySql = transactionMapperMySql;
 	}
 
 	@Autowired
-	public void setRepositoryContext(RepositoryContext repositoryContext) {
+	public void setRepositoryContext(final RepositoryContext repositoryContext) {
 		this.repositoryContext = repositoryContext;
 	}
 
 	@Autowired
-	public void setDataStructureService(DataStructureService dataStructureService) {
+	public void setDataStructureService(final DataStructureService dataStructureService) {
 		this.dataStructureService = dataStructureService;
+	}
+
+	@Autowired
+	public void setMySqlTransactionTypeRepository(final MySqlTransactionTypeRepository mySqlTransactionTypeRepository) {
+		this.mySqlTransactionTypeRepository = mySqlTransactionTypeRepository;
 	}
 
 	public List<TransactionDto> getTransactions(final int type) {
@@ -131,6 +138,13 @@ public class TransactionService {
 			final TransactionDao<?> transactionDao = repositoryContext.getDatabaseInstance();
 			final TransactionDto transactionDto = persistEntity(request, transactionDao);
 
+			// allow to update data structure of transaction type
+			// if there are no transactions in memory
+			if (dataStructureService.isEmpty(transactionDto)) {
+				mySqlTransactionTypeRepository.updateDataStructure(transactionDto.getDataStructure(),
+								Long.valueOf(TransactionTypeEnum.findByName(transactionDto.getType()).getId()));
+				dataStructureService.setNewDataStructure(transactionDto);
+			}
 			// save transaction in memory
 			dataStructureService.addTransaction(transactionDto);
 		} catch (final Exception e) {
@@ -159,7 +173,7 @@ public class TransactionService {
 		try {
 			final TransactionDao<?> transactionDao = repositoryContext.getDatabaseInstance();
 			// NoSuchElementException is thrown if transaction does not exist
-			Object transactionEntity = transactionDao.findById(id);
+			final Object transactionEntity = transactionDao.findById(id);
 			transactionDao.delete(id);
 
 			TransactionDto transactionDto = new TransactionDto();
@@ -182,15 +196,25 @@ public class TransactionService {
 
 	@SuppressWarnings("unchecked")
 	private TransactionDto persistEntity(final TransactionDto request, final TransactionDao<?> transactionDao) {
+		TransactionDto transactionDto = new TransactionDto();
 		if (RepositoryUtil.isMySql()) {
 			final TransactionMySql mySqlEntity = transactionMapperMySql.dtoToEntity(request);
-			TransactionMySql savedEntity = ((TransactionDao<TransactionMySql>) transactionDao).persist(mySqlEntity);
-			return transactionMapperMySql.entityToDto(savedEntity);
+			final TransactionMySql savedEntity = ((TransactionDao<TransactionMySql>) transactionDao)
+							.persist(mySqlEntity);
+			transactionDto = transactionMapperMySql.entityToDto(savedEntity);
 		} else if (RepositoryUtil.isMongoDb()) {
 			final TransactionMongo mongoEntity = transactionMapperMongo.dtoToEntity(request);
-			TransactionMongo savedEntity = ((TransactionDao<TransactionMongo>) transactionDao).persist(mongoEntity);
-			return transactionMapperMongo.entityToDto(savedEntity);
+			final TransactionMongo savedEntity = ((TransactionDao<TransactionMongo>) transactionDao)
+							.persist(mongoEntity);
+			transactionDto = transactionMapperMongo.entityToDto(savedEntity);
 		}
-		return null;
+		transactionDto.setType(request.getType());
+		transactionDto.setDataStructure(request.getDataStructure());
+		return transactionDto;
+	}
+
+	public void deleteTransactionsInMemory() {
+		// delete transactions in memory
+		dataStructureService.cleanDataStructures();
 	}
 }

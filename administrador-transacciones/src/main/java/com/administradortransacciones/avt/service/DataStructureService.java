@@ -77,4 +77,25 @@ public class DataStructureService {
 		}
 		return list;
 	}
+
+	public boolean isEmpty(final TransactionDto transaction) {
+		if (TransactionTypeEnum.CHECK_CHANGE.name().equals(transaction.getType())) {
+			return CheckChangeTransaction.getInstance().isEmpty();
+		} else if (TransactionTypeEnum.MONEY_TRANSFER.name().equals(transaction.getType())) {
+			return MoneyTransferTransaction.getInstance().isEmpty();
+		} else if (TransactionTypeEnum.PAYROLL_PAYMENT.name().equals(transaction.getType())) {
+			return PayrollPaymentTransaction.getInstance().isEmpty();
+		}
+		return false;
+	}
+
+	public void setNewDataStructure(final TransactionDto transaction) {
+		if (TransactionTypeEnum.CHECK_CHANGE.name().equals(transaction.getType())) {
+			CheckChangeTransaction.getInstance().setBinaryTree(transaction.getDataStructure());
+		} else if (TransactionTypeEnum.MONEY_TRANSFER.name().equals(transaction.getType())) {
+			MoneyTransferTransaction.getInstance().setBinaryTree(transaction.getDataStructure());
+		} else if (TransactionTypeEnum.PAYROLL_PAYMENT.name().equals(transaction.getType())) {
+			PayrollPaymentTransaction.getInstance().setBinaryTree(transaction.getDataStructure());
+		}
+	}
 }
