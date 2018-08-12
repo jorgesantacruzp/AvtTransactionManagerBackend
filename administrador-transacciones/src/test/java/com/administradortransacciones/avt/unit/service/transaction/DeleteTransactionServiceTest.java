@@ -12,12 +12,14 @@ import com.administradortransacciones.avt.common.RepositoryEnum;
 import com.administradortransacciones.avt.common.exception.TransactionException;
 import com.administradortransacciones.avt.common.util.RepositoryUtil;
 import com.administradortransacciones.avt.dao.mongo.model.TransactionMongo;
+import com.administradortransacciones.avt.dao.mysql.model.TransactionMySql;
 
 public class DeleteTransactionServiceTest extends BaseTransactionServiceUnitTest {
 
 	@Test
 	public void shouldDeleteTransactionInMySql() {
 		RepositoryUtil.setChosenRepository(RepositoryEnum.MYSQL.name());
+		when(transactionDao.findById("1")).thenReturn(new TransactionMySql());
 		transactionService.deleteTransaction("1");
 	}
 
@@ -44,6 +46,11 @@ public class DeleteTransactionServiceTest extends BaseTransactionServiceUnitTest
 
 		doThrow(new TransactionException()).when(transactionDao).delete("1");
 		transactionService.deleteTransaction("1");
+	}
+
+	@Test
+	public void shouldDeleteTransactionsInMemory() {
+		transactionService.deleteTransactionsInMemory();
 	}
 
 }

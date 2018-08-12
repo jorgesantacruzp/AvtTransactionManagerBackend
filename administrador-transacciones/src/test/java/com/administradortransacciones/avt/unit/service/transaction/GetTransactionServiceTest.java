@@ -2,6 +2,7 @@ package com.administradortransacciones.avt.unit.service.transaction;
 
 import static com.administradortransacciones.avt.unit.util.TransactionTestUtil.getTransactionMongoSample;
 import static com.administradortransacciones.avt.unit.util.TransactionTestUtil.getTransactionMySqlSample;
+import static com.administradortransacciones.avt.unit.util.TransactionTestUtil.getTransactionDtoSample;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
@@ -29,6 +30,14 @@ public class GetTransactionServiceTest extends BaseTransactionServiceUnitTest {
 	@Test
 	public void shouldGetAllTransactionsFromMongoDb() {
 		when(transactionDao.findAll()).thenReturn(Arrays.asList(getTransactionMongoSample()));
+		List<?> transactions = transactionService.getTransactions(TransactionTypeEnum.ALL.getId());
+		assertThat(transactions, hasSize(1));
+	}
+
+	@Test
+	public void shouldGetAllTransactionsFromDataStructure() {
+		when(dataStructureService.getAllTransactions(TransactionTypeEnum.ALL))
+						.thenReturn(Arrays.asList(getTransactionDtoSample()));
 		List<?> transactions = transactionService.getTransactions(TransactionTypeEnum.ALL.getId());
 		assertThat(transactions, hasSize(1));
 	}
@@ -81,4 +90,11 @@ public class GetTransactionServiceTest extends BaseTransactionServiceUnitTest {
 		assertThat(transactions, hasSize(1));
 	}
 
+	@Test
+	public void shouldGetTransactionsByWeightAndTypeFromDataStructure() {
+		when(dataStructureService.findTransaction(1, TransactionTypeEnum.CHECK_CHANGE))
+						.thenReturn(Arrays.asList(getTransactionDtoSample()));
+		List<?> transactions = transactionService.findTransactionByWeight(1, TransactionTypeEnum.CHECK_CHANGE.getId());
+		assertThat(transactions, hasSize(1));
+	}
 }

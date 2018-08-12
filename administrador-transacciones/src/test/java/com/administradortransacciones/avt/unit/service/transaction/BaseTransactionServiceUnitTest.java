@@ -33,7 +33,7 @@ public abstract class BaseTransactionServiceUnitTest extends BaseSpringUnitTest 
 	private TransactionMapperMySql transactionMapperMySql;
 	
 	@Mock
-	private DataStructureService dataStructureService;
+	protected DataStructureService dataStructureService;
 
 	@Before
 	public void before() {

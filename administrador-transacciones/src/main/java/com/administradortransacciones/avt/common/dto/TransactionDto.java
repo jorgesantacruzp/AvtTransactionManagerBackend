@@ -13,6 +13,15 @@ public class TransactionDto {
 	private String type;
 	private String dataStructure;
 
+	public TransactionDto() {
+		super();
+	}
+
+	public TransactionDto(final Integer weight) {
+		super();
+		this.weight = weight;
+	}
+
 	public String getId() {
 		return id;
 	}
