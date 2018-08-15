@@ -72,6 +72,7 @@ public class TransactionService {
 			}
 
 			// if not in memory search in database
+			LOGGER.info("Transactions fetched from database");
 			if (TransactionTypeEnum.ALL.equals(typeEnum)) {
 				transactions = repositoryContext.getDatabaseInstance().findAll();
 			} else {
@@ -103,6 +104,7 @@ public class TransactionService {
 			}
 
 			// if not in memory search in database
+			LOGGER.info("Transactions fetched from database");
 			if (TransactionTypeEnum.ALL.equals(typeEnum)) {
 				transactions = repositoryContext.getDatabaseInstance().findByWeight(weight);
 			} else {
@@ -142,11 +144,12 @@ public class TransactionService {
 			// if there are no transactions in memory
 			if (dataStructureService.isEmpty(transactionDto)) {
 				mySqlTransactionTypeRepository.updateDataStructure(transactionDto.getDataStructure(),
-								Long.valueOf(TransactionTypeEnum.findByName(transactionDto.getType()).getId()));
+						Long.valueOf(TransactionTypeEnum.findByName(transactionDto.getType()).getId()));
 				dataStructureService.setNewDataStructure(transactionDto);
 			}
 			// save transaction in memory
 			dataStructureService.addTransaction(transactionDto);
+			LOGGER.info("Transaction saved correctly");
 		} catch (final Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			throw new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_SAVED);
@@ -160,6 +163,7 @@ public class TransactionService {
 			transactionDao.findById(id);
 			request.setId(id);
 			persistEntity(request, transactionDao);
+			LOGGER.info("Transaction updated correctly");
 		} catch (final NoSuchElementException nse) {
 			LOGGER.error(nse.getMessage(), nse);
 			throw new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND);
@@ -185,6 +189,7 @@ public class TransactionService {
 
 			// delete transaction in memory
 			dataStructureService.deleteTransaction(transactionDto);
+			LOGGER.info("Transaction deleted correctly");
 		} catch (final NoSuchElementException nse) {
 			LOGGER.error(nse.getMessage(), nse);
 			throw new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FOUND);
@@ -200,12 +205,12 @@ public class TransactionService {
 		if (RepositoryUtil.isMySql()) {
 			final TransactionMySql mySqlEntity = transactionMapperMySql.dtoToEntity(request);
 			final TransactionMySql savedEntity = ((TransactionDao<TransactionMySql>) transactionDao)
-							.persist(mySqlEntity);
+					.persist(mySqlEntity);
 			transactionDto = transactionMapperMySql.entityToDto(savedEntity);
 		} else if (RepositoryUtil.isMongoDb()) {
 			final TransactionMongo mongoEntity = transactionMapperMongo.dtoToEntity(request);
 			final TransactionMongo savedEntity = ((TransactionDao<TransactionMongo>) transactionDao)
-							.persist(mongoEntity);
+					.persist(mongoEntity);
 			transactionDto = transactionMapperMongo.entityToDto(savedEntity);
 		}
 		transactionDto.setType(request.getType());
@@ -216,5 +221,6 @@ public class TransactionService {
 	public void deleteTransactionsInMemory() {
 		// delete transactions in memory
 		dataStructureService.cleanDataStructures();
+		LOGGER.info("All in memory data structures are cleaned");
 	}
 }
