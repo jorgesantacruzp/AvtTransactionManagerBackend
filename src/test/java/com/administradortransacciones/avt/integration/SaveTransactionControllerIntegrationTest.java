@@ -59,7 +59,7 @@ public class SaveTransactionControllerIntegrationTest extends BaseTransactionCon
 	@Test
 	public void shouldThrowTransactionExceptionWhileSaving() {
 		transactionService.setRepositoryContext(repositoryContextMock);
-		when(repositoryContextMock.getDatabaseInstance()).thenThrow(new TransactionException());
+		when(repositoryContextMock.getDatabaseInstance()).thenThrow(new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_SAVED));
 		given()
 			.header("Content-Type", "application/json")
 			.body(TransactionTestUtil.getTransactionDtoSample())

@@ -1,8 +1,8 @@
 package com.administradortransacciones.avt.unit.service.transaction;
 
+import static com.administradortransacciones.avt.unit.util.TransactionTestUtil.getTransactionDtoSample;
 import static com.administradortransacciones.avt.unit.util.TransactionTestUtil.getTransactionMongoSample;
 import static com.administradortransacciones.avt.unit.util.TransactionTestUtil.getTransactionMySqlSample;
-import static com.administradortransacciones.avt.unit.util.TransactionTestUtil.getTransactionDtoSample;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
@@ -62,7 +62,7 @@ public class GetTransactionServiceTest extends BaseTransactionServiceUnitTest {
 		thrown.expect(TransactionException.class);
 		thrown.expectMessage(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED.getCode());
 
-		doThrow(new TransactionException()).when(transactionDao).findAll();
+		doThrow(new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED)).when(transactionDao).findAll();
 		transactionService.getTransactions(TransactionTypeEnum.ALL.getId());
 	}
 
@@ -78,7 +78,7 @@ public class GetTransactionServiceTest extends BaseTransactionServiceUnitTest {
 		thrown.expect(TransactionException.class);
 		thrown.expectMessage(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED.getCode());
 
-		doThrow(new TransactionException()).when(transactionDao).findByWeight(1);
+		doThrow(new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED)).when(transactionDao).findByWeight(1);
 		transactionService.findTransactionByWeight(1, TransactionTypeEnum.ALL.getId());
 	}
 

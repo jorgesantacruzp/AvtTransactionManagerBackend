@@ -6,11 +6,7 @@ public class TransactionException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	private ErrorCodesEnum errorCode;
-
-	public TransactionException() {
-		super();
-	}
+	private final ErrorCodesEnum errorCode;
 
 	public TransactionException(final ErrorCodesEnum errorCode) {
 		super(errorCode.getCode());
@@ -19,10 +15,6 @@ public class TransactionException extends RuntimeException {
 
 	public ErrorCodesEnum getErrorCode() {
 		return errorCode;
-	}
-
-	public void setErrorCode(final ErrorCodesEnum errorPropertyCode) {
-		errorCode = errorPropertyCode;
 	}
 
 }

@@ -40,7 +40,7 @@ public class GetTransactionControllerIntegrationTest extends BaseTransactionCont
 	@Test
 	public void shouldThrowTransactionExceptionWhenOccursGeneralErrorWhileGettingAllTransactions() {
 		RepositoryUtil.setChosenRepository(RepositoryEnum.MONGODB.name());
-		when(mongoTransactionRepository.findAll()).thenThrow(new TransactionException());
+		when(mongoTransactionRepository.findAll()).thenThrow(new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED));
 		get("/transactions")
 			.then().statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
 			.assertThat()
@@ -71,7 +71,7 @@ public class GetTransactionControllerIntegrationTest extends BaseTransactionCont
 	@Test
 	public void shouldThrowTransactionExceptionWhileGettingTransactionsByWeight() {
 		RepositoryUtil.setChosenRepository(RepositoryEnum.MONGODB.name());
-		when(mongoTransactionRepository.findByWeight(1)).thenThrow(new TransactionException());
+		when(mongoTransactionRepository.findByWeight(1)).thenThrow(new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_FETCHED));
 		get("/transactions/1")
 			.then().statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
 			.assertThat()

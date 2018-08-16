@@ -44,7 +44,7 @@ public class DeleteTransactionServiceTest extends BaseTransactionServiceUnitTest
 		thrown.expect(TransactionException.class);
 		thrown.expectMessage(ErrorCodesEnum.ATXN_TRANSACTION_NOT_DELETED.getCode());
 
-		doThrow(new TransactionException()).when(transactionDao).delete("1");
+		doThrow(new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_DELETED)).when(transactionDao).delete("1");
 		transactionService.deleteTransaction("1");
 	}
 

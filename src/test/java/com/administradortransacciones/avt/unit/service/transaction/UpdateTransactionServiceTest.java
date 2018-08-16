@@ -46,7 +46,7 @@ public class UpdateTransactionServiceTest extends BaseTransactionServiceUnitTest
 		thrown.expect(TransactionException.class);
 		thrown.expectMessage(ErrorCodesEnum.ATXN_TRANSACTION_NOT_UPDATED.getCode());
 
-		doThrow(new TransactionException()).when(transactionDao).findById("1");
+		doThrow(new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_UPDATED)).when(transactionDao).findById("1");
 		transactionService.updateTransaction("1", new TransactionDto());
 	}
 

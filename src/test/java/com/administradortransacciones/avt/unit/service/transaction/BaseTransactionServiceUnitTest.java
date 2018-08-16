@@ -17,7 +17,6 @@ import com.administradortransacciones.avt.service.DataStructureService;
 import com.administradortransacciones.avt.service.TransactionService;
 import com.administradortransacciones.avt.unit.BaseSpringUnitTest;
 
-@SuppressWarnings("unchecked")
 public abstract class BaseTransactionServiceUnitTest extends BaseSpringUnitTest {
 
 	@Rule
@@ -31,7 +30,7 @@ public abstract class BaseTransactionServiceUnitTest extends BaseSpringUnitTest 
 
 	@Mock
 	private TransactionMapperMySql transactionMapperMySql;
-	
+
 	@Mock
 	protected DataStructureService dataStructureService;
 

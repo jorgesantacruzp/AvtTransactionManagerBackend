@@ -41,7 +41,7 @@ public class SaveTransactionServiceTest extends BaseTransactionServiceUnitTest {
 		thrown.expect(TransactionException.class);
 		thrown.expectMessage(ErrorCodesEnum.ATXN_TRANSACTION_NOT_SAVED.getCode());
 
-		doThrow(new TransactionException()).when(transactionDao).persist(any());
+		doThrow(new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_SAVED)).when(transactionDao).persist(any());
 		transactionService.saveTransaction(new TransactionDto());
 	}
 

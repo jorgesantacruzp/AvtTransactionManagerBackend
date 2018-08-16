@@ -46,7 +46,7 @@ public class DeleteTransactionControllerIntegrationTest extends BaseTransactionC
 
 	@Test
 	public void shouldThrowTransactionExceptionWhileDeleting() {
-		when(mongoTransactionRepository.findById("3")).thenThrow(new TransactionException());
+		when(mongoTransactionRepository.findById("3")).thenThrow(new TransactionException(ErrorCodesEnum.ATXN_TRANSACTION_NOT_DELETED));
 		delete("/transactions/3")
 			.then().statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
 			.assertThat()
