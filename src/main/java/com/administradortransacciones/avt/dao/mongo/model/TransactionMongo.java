@@ -60,4 +60,9 @@ public class TransactionMongo {
 		return true;
 	}
 
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
 }

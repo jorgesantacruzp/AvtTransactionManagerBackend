@@ -27,17 +27,15 @@ public class CheckChangeTransaction extends TransactionTypeDataStructure {
 	@Override
 	public void enqueueAll(final List<TransactionDto> transactions) {
 		cleanQueue();
-		transactions.stream().filter(t -> TransactionTypeEnum.CHECK_CHANGE.name().equals(t.getType())).forEach(t -> {
-			queue.enqueue(t);
-		});
+		transactions.stream().filter(t -> TransactionTypeEnum.CHECK_CHANGE.name().equals(t.getType()))
+				.forEach(t -> queue.enqueue(t));
 	}
 
 	@Override
 	public void addAllToBinaryTree(final List<TransactionDto> transactions) {
 		cleanBinaryTree();
-		transactions.stream().filter(t -> TransactionTypeEnum.CHECK_CHANGE.name().equals(t.getType())).forEach(t -> {
-			binaryTree.insert(t);
-		});
+		transactions.stream().filter(t -> TransactionTypeEnum.CHECK_CHANGE.name().equals(t.getType()))
+				.forEach(t -> binaryTree.insert(t));
 	}
 
 }

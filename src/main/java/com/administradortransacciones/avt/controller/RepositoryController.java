@@ -21,13 +21,13 @@ public class RepositoryController {
 
 	@GetMapping("/v1/repositories")
 	public ResponseEntity<String> getActiveRepository() {
-		return new ResponseEntity<String>(RepositoryUtil.getChosenRepository(), HttpStatus.OK);
+		return new ResponseEntity<>(RepositoryUtil.getChosenRepository(), HttpStatus.OK);
 	}
 
 	@PostMapping("/v1/repositories/{repository}")
 	public ResponseEntity<String> saveRepository(@PathVariable(value = "repository") final String repository) {
 		repositoryService.saveRepositoryInMemory(repository);
-		return new ResponseEntity<String>(HttpStatus.CREATED);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 }

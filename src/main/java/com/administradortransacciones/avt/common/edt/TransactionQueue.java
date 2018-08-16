@@ -63,7 +63,7 @@ public class TransactionQueue {
 				if (root == last) {
 					root = null;
 					last = null;
-					break;
+					return;
 				} else {
 					tempRoot = tempRoot.next;
 					continue;

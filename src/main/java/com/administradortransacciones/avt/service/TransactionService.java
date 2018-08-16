@@ -61,7 +61,7 @@ public class TransactionService {
 
 	public List<TransactionDto> getTransactions(final int type) {
 		try {
-			List<?> transactions = Collections.emptyList();
+			List<?> transactions;
 			final TransactionTypeEnum typeEnum = TransactionTypeEnum.findById(type);
 
 			// search in memory if there are transactions
@@ -93,7 +93,7 @@ public class TransactionService {
 
 	public List<TransactionDto> findTransactionByWeight(final int weight, final int type) {
 		try {
-			List<?> transactions = Collections.emptyList();
+			List<?> transactions;
 			final TransactionTypeEnum typeEnum = TransactionTypeEnum.findById(type);
 
 			// search in memory if the transaction exists
@@ -124,13 +124,9 @@ public class TransactionService {
 
 		final List<TransactionDto> list = new ArrayList<>();
 		if (transactions.get(0) instanceof TransactionMySql) {
-			transactions.stream().forEach(t -> {
-				list.add(transactionMapperMySql.entityToDto((TransactionMySql) t));
-			});
+			transactions.stream().forEach(t -> list.add(transactionMapperMySql.entityToDto((TransactionMySql) t)));
 		} else if (transactions.get(0) instanceof TransactionMongo) {
-			transactions.stream().forEach(t -> {
-				list.add(transactionMapperMongo.entityToDto((TransactionMongo) t));
-			});
+			transactions.stream().forEach(t -> list.add(transactionMapperMongo.entityToDto((TransactionMongo) t)));
 		}
 		return list;
 	}

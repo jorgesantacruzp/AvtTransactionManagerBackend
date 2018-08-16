@@ -18,19 +18,21 @@ public class RepositoryService {
 	private RepositoryContext repositoryContext;
 
 	public void saveRepositoryInMemory(final String repository) {
+		String message = "This type of repository does not exist";
 		if (RepositoryEnum.MYSQL.name().equals(repository)) {
 			int transactionsInMongo = repositoryContext.getDatabaseInstance(RepositoryEnum.MONGODB.name()).count();
 			if (transactionsInMongo == 0) {
 				RepositoryUtil.setChosenRepository(RepositoryEnum.MYSQL.name());
-				LOGGER.info(RepositoryEnum.MYSQL.name().concat(" is the new repository to use"));
+				message = String.format("%s is the new repository to use", repository);
 			}
 		} else if (RepositoryEnum.MONGODB.name().equals(repository)) {
 			int transactionsInMySql = repositoryContext.getDatabaseInstance(RepositoryEnum.MYSQL.name()).count();
 			if (transactionsInMySql == 0) {
 				RepositoryUtil.setChosenRepository(RepositoryEnum.MONGODB.name());
-				LOGGER.info(RepositoryEnum.MONGODB.name().concat(" is the new repository to use"));
+				message = String.format("%s is the new repository to use", repository);
 			}
 		}
+		LOGGER.info(message);
 	}
 
 }

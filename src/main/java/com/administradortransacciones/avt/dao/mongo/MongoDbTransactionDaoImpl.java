@@ -2,6 +2,8 @@ package com.administradortransacciones.avt.dao.mongo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -58,7 +60,7 @@ public class MongoDbTransactionDaoImpl implements TransactionDao<TransactionMong
 
 	@Override
 	public int count() {
-		return Long.valueOf(mongoTransactionRepository.count()).intValue();
+		return (int) mongoTransactionRepository.count();
 	}
 
 	/**
@@ -66,7 +68,11 @@ public class MongoDbTransactionDaoImpl implements TransactionDao<TransactionMong
 	 */
 	@Override
 	public TransactionMongo findById(final String id) {
-		return mongoTransactionRepository.findById(id).get();
+		Optional<TransactionMongo> optional = mongoTransactionRepository.findById(id);
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+		throw new NoSuchElementException();
 	}
 
 	@Override

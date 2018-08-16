@@ -65,4 +65,10 @@ public class TransactionMySql {
 	public boolean equals(final Object obj) {
 		return true;
 	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
 }

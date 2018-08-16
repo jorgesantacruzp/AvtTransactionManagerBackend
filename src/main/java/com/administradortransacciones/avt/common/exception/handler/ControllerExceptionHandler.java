@@ -25,6 +25,6 @@ public class ControllerExceptionHandler {
 		final ErrorCodesEnum errorCode = e.getErrorCode();
 		response.setErrorType(errorCode.getCode());
 		response.setMessage(environment.getProperty(errorCode.getPropertyCode()));
-		return new ResponseEntity<ApiBase>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

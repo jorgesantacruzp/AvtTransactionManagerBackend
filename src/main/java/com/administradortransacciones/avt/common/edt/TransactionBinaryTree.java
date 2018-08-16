@@ -95,8 +95,8 @@ public class TransactionBinaryTree {
 	}
 
 	private Node getSuccessor(final Node deleteNode) {
-		Node successsor = null;
-		Node successsorParent = null;
+		Node successsor = new Node(null);
+		Node successsorParent = new Node(null);
 		Node current = deleteNode.right;
 		while (current != null) {
 			successsorParent = successsor;

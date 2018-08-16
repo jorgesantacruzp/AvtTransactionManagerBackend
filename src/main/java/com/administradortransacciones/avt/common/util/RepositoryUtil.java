@@ -4,6 +4,10 @@ import com.administradortransacciones.avt.common.RepositoryEnum;
 
 public class RepositoryUtil {
 
+	private RepositoryUtil() {
+		// avoid instantiation
+	}
+
 	// MySQL is the default database
 	private static String chosenRepository = "MYSQL";
 

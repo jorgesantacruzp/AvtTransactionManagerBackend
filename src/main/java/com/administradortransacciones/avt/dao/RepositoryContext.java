@@ -9,6 +9,7 @@ import com.administradortransacciones.avt.dao.mongo.MongoDbTransactionDaoImpl;
 import com.administradortransacciones.avt.dao.mysql.MySqlTransactionDaoImpl;
 
 @Service
+@SuppressWarnings("rawtypes")
 public class RepositoryContext {
 
 	private TransactionDao<?> transactionDao;
@@ -19,11 +20,11 @@ public class RepositoryContext {
 	@Autowired
 	private MongoDbTransactionDaoImpl mongoDbRepository;
 
-	public TransactionDao<?> getDatabaseInstance() {
+	public TransactionDao getDatabaseInstance() {
 		return getDatabaseInstance(RepositoryUtil.getChosenRepository());
 	}
 
-	public TransactionDao<?> getDatabaseInstance(final String repository) {
+	public TransactionDao getDatabaseInstance(final String repository) {
 		if (RepositoryEnum.MYSQL.name().equals(repository)) {
 			transactionDao = mySqlRepository;
 		} else if (RepositoryEnum.MONGODB.name().equals(repository)) {

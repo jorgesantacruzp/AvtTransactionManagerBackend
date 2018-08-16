@@ -75,4 +75,9 @@ public class TransactionDto {
 		return true;
 	}
 
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
 }

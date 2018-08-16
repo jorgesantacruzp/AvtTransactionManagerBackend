@@ -2,6 +2,8 @@ package com.administradortransacciones.avt.dao.mysql;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -61,7 +63,7 @@ public class MySqlTransactionDaoImpl implements TransactionDao<TransactionMySql>
 
 	@Override
 	public int count() {
-		return Long.valueOf(mysqlTransactionRepository.count()).intValue();
+		return (int) mysqlTransactionRepository.count();
 	}
 
 	/**
@@ -69,13 +71,17 @@ public class MySqlTransactionDaoImpl implements TransactionDao<TransactionMySql>
 	 */
 	@Override
 	public TransactionMySql findById(final String id) {
-		return mysqlTransactionRepository.findById(Long.valueOf(id)).get();
+		Optional<TransactionMySql> optional = mysqlTransactionRepository.findById(Long.valueOf(id));
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+		throw new NoSuchElementException();
 	}
 
 	@Override
 	public List<TransactionMySql> findByWeightAndType(final int weight, final String type) {
 		final List<TransactionMySql> results = mysqlTransactionRepository.findByWeightAndType(weight,
-						new TransactionTypeMySql(type));
+				new TransactionTypeMySql(type));
 		if (results == null) {
 			return new ArrayList<>();
 		}
